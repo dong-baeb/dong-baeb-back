@@ -4,7 +4,6 @@ import com.dongbaeb.demo.profile.dto.MemberRequest;
 import com.dongbaeb.demo.profile.dto.MemberResponse;
 import com.dongbaeb.demo.profile.service.MemberService;
 import jakarta.validation.Valid;
-import lombok.extern.slf4j.XSlf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
