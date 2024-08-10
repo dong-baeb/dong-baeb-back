@@ -1,0 +1,7 @@
+# ignore all .class files
+gradle
+build
+.DS_Store
+.idea
+.gradle
+.env
