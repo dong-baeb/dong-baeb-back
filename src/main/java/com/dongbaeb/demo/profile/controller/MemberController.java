@@ -7,6 +7,8 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
+
 @RestController
 @RequestMapping("/members")
 public class MemberController {
@@ -16,22 +18,17 @@ public class MemberController {
         this.memberService = memberService;
     }
 
-    //처음 프로필 화면 들어갈때 get으로 요청 안해줘도 되는 걸까요..? 웹에서는 get으로 화면을 이동시켜줘야했었는데 필요없다면 지우겠습니다!
-    @GetMapping("/profile")
-    public ResponseEntity<String> getExample() {
-        return ResponseEntity.ok("Example GET response");
-    }
-
     @PostMapping
-    public ResponseEntity<MemberResponse> createMember(@Valid @RequestBody MemberRequest memberRequest) {
+    public ResponseEntity<Long> createMember(@Valid @RequestBody MemberRequest memberRequest) {
         MemberResponse createdMember = memberService.createMember(memberRequest);
-        return ResponseEntity.ok(createdMember);
+        URI location = URI.create(String.format("/members/%d", createdMember.id()));
+        return ResponseEntity.created(location).body(createdMember.id());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id, @Valid @RequestBody MemberRequest memberRequest) {
-        MemberResponse updatedMember = memberService.updateMember(id, memberRequest);
-        return ResponseEntity.ok(updatedMember);
+    public ResponseEntity<Void> updateMember(@PathVariable Long id, @Valid @RequestBody MemberRequest memberRequest) {
+        memberService.updateMember(id, memberRequest);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
@@ -39,5 +36,4 @@ public class MemberController {
         memberService.deleteMember(id);
         return ResponseEntity.noContent().build();
     }
-
 }

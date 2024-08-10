@@ -8,11 +8,9 @@ import com.dongbaeb.demo.profile.dto.MemberResponse;
 import com.dongbaeb.demo.profile.repository.MemberRepository;
 import com.dongbaeb.demo.profile.repository.UniversityRepository;
 import org.springframework.stereotype.Service;
-
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class MemberService {
@@ -44,13 +42,12 @@ public class MemberService {
 
         return new MemberResponse(
                 member.getId(),
-                member.getKakaoId(),
                 member.getRole(),
                 member.getName(),
                 member.getNickname(),
                 member.getProfileImageUrl(),
                 member.getStudentNo(),
-                universities.stream().map(University::getId).collect(Collectors.toList())
+                universities.stream().map(University::getId).toList()
         );
     }
 
@@ -65,8 +62,23 @@ public class MemberService {
         member.setProfileImageUrl(memberRequest.profileImageUrl());
         member.setStudentNo(memberRequest.studentNo());
 
+        List<University> universities = memberRequest.universityIds().stream()
+                .map(universityRepository::findById)
+                .map(optionalUniversity -> optionalUniversity.orElseThrow(() -> new ResourceNotFoundException("해당 대학을 찾을 수 없습니다: " + optionalUniversity)))
+                .toList();
+
+        member.setUniversities(universities);
+
         Member updatedMember = memberRepository.save(member);
-        return new MemberResponse(updatedMember);
+        return new MemberResponse(
+                updatedMember.getId(),
+                updatedMember.getRole(),
+                updatedMember.getName(),
+                updatedMember.getNickname(),
+                updatedMember.getProfileImageUrl(),
+                updatedMember.getStudentNo(),
+                updatedMember.getUniversities().stream().map(University::getId).toList()
+        );
     }
 
     @Transactional
@@ -77,4 +89,3 @@ public class MemberService {
         memberRepository.delete(member);
     }
 }
-

@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 
 public record MemberResponse(
         Long id,
-        String kakaoId,
         String role,
         String name,
         String nickname,
@@ -19,7 +18,6 @@ public record MemberResponse(
     public MemberResponse(Member member) {
         this(
                 member.getId(),
-                member.getKakaoId(),
                 member.getRole(),
                 member.getName(),
                 member.getNickname(),
