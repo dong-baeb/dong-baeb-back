@@ -1,7 +1,7 @@
 package com.dongbaeb.demo.profile.service;
 
-import com.dongbaeb.demo.entity.Member;
-import com.dongbaeb.demo.entity.University;
+import com.dongbaeb.demo.profile.entity.Member;
+import com.dongbaeb.demo.profile.entity.University;
 import com.dongbaeb.demo.exception.ResourceNotFoundException;
 import com.dongbaeb.demo.profile.dto.MemberRequest;
 import com.dongbaeb.demo.profile.dto.MemberResponse;
@@ -36,8 +36,8 @@ public class MemberService {
 
         List<University> universities = memberRequest.universityIds().stream()
                 .map(universityRepository::findById)
-                .map(optionalUniversity -> optionalUniversity.orElseThrow(() -> new RuntimeException("University not found")))
-                .collect(Collectors.toList());
+                .map(optionalUniversity -> optionalUniversity.orElseThrow(() -> new ResourceNotFoundException("해당 대학을 찾을 수 없습니다: " + optionalUniversity)))
+                .toList();
 
         member.setUniversities(universities);
         memberRepository.save(member);
@@ -57,7 +57,7 @@ public class MemberService {
     @Transactional
     public MemberResponse updateMember(Long id, MemberRequest memberRequest) {
         Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("아이디를 찾을 수 없습니다 : " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("해당 아이디를 가진 사용자를 찾을 수 없습니다: " + id));
 
         member.setName(memberRequest.name());
         member.setRole(memberRequest.role());
@@ -72,7 +72,7 @@ public class MemberService {
     @Transactional
     public void deleteMember(Long id) {
         Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("아이디를 찾을 수 없습니다 : " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("해당 아이디를 가진 사용자를 찾을 수 없습니다: " + id));
 
         memberRepository.delete(member);
     }

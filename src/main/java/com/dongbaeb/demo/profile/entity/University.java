@@ -1,14 +1,12 @@
-package com.dongbaeb.demo.entity;
+package com.dongbaeb.demo.profile.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.List;
 
 @Entity
 @Getter
-@Setter
 public class University extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,4 +15,12 @@ public class University extends BaseEntity {
 
     @ManyToMany(mappedBy = "universities")
     private List<Member> members;
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setMembers(List<Member> members) {
+        this.members = members;
+    }
 }

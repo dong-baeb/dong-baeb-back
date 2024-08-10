@@ -1,10 +1,9 @@
 package com.dongbaeb.demo.profile.dto;
 
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 
 public record UniversityRequest(
-        @NotNull @NotEmpty String name
+        @NotBlank String name
 ) {
 
 }

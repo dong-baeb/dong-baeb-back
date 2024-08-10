@@ -16,6 +16,7 @@ public class MemberController {
         this.memberService = memberService;
     }
 
+    //처음 프로필 화면 들어갈때 get으로 요청 안해줘도 되는 걸까요..? 웹에서는 get으로 화면을 이동시켜줘야했었는데 필요없다면 지우겠습니다!
     @GetMapping("/profile")
     public ResponseEntity<String> getExample() {
         return ResponseEntity.ok("Example GET response");

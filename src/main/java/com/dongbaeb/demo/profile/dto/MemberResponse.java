@@ -1,7 +1,7 @@
 package com.dongbaeb.demo.profile.dto;
 
-import com.dongbaeb.demo.entity.Member;
-import com.dongbaeb.demo.entity.University;
+import com.dongbaeb.demo.profile.entity.Member;
+import com.dongbaeb.demo.profile.entity.University;
 
 import java.util.List;
 import java.util.stream.Collectors;
