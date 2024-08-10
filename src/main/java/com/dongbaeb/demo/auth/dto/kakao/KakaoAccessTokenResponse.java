@@ -1,4 +1,4 @@
-package com.dongbaeb.demo.auth.dto;
+package com.dongbaeb.demo.auth.dto.kakao;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
