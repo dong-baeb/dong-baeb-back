@@ -23,7 +23,7 @@ jobs:
       - name: .env 파일 생성
         run: |
           echo "KAKAO_APP_KEY=${{ secrets.KAKAO_APP_KEY }}" > .env
-          echo "KAKAO_REDIRECT_URL_LOCAL=${{ secrets.AKAO_REDIRECT_URL_LOCAL }}$" >> .env
+          echo "KAKAO_REDIRECT_URL_LOCAL=${{ secrets.KAKAO_REDIRECT_URL_LOCAL }}$" >> .env
 
       - name: 빌드 및 테스트
         run: ./gradlew build
