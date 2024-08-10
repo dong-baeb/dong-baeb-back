@@ -24,6 +24,7 @@ jobs:
         run: |
           echo "KAKAO_APP_KEY=${{ secrets.KAKAO_APP_KEY }}" > .env
           echo "KAKAO_REDIRECT_URL_LOCAL=${{ secrets.KAKAO_REDIRECT_URL_LOCAL }}$" >> .env
+          echo "JWT_TOKEN_SECRET_KEY=${{ secrets.JWT_TOKEN_SECRET_KEY }}$" >> .env
 
       - name: 빌드 및 테스트
         run: ./gradlew build
