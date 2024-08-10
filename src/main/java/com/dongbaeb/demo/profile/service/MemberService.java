@@ -52,7 +52,7 @@ public class MemberService {
     }
 
     @Transactional
-    public MemberResponse updateMember(Long id, MemberRequest memberRequest) {
+    public void updateMember(Long id, MemberRequest memberRequest) {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("해당 아이디를 가진 사용자를 찾을 수 없습니다: " + id));
 
@@ -70,7 +70,7 @@ public class MemberService {
         member.setUniversities(universities);
 
         Member updatedMember = memberRepository.save(member);
-        return new MemberResponse(
+        new MemberResponse(
                 updatedMember.getId(),
                 updatedMember.getRole(),
                 updatedMember.getName(),
