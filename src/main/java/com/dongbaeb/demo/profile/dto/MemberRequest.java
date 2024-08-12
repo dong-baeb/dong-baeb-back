@@ -1,7 +1,6 @@
 package com.dongbaeb.demo.profile.dto;
 
 import com.dongbaeb.demo.profile.entity.Member;
-import com.dongbaeb.demo.profile.entity.University;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 
@@ -28,7 +27,7 @@ public record MemberRequest(
 
         List<Long> universityIds
 ) {
-        public Member toMember(List<University> universities) {
+        public Member toMember() {
                 return Member.builder()
                         .kakaoId(this.kakaoId)
                         .role(this.role)
@@ -36,7 +35,6 @@ public record MemberRequest(
                         .nickname(this.nickname)
                         .profileImageUrl(this.profileImageUrl)
                         .studentNo(this.studentNo)
-                        .universities(universities)
                         .build();
         }
 }

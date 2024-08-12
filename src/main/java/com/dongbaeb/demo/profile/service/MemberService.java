@@ -1,11 +1,13 @@
 package com.dongbaeb.demo.profile.service;
 
 import com.dongbaeb.demo.profile.entity.Member;
+import com.dongbaeb.demo.profile.entity.MemberUniversity;
 import com.dongbaeb.demo.profile.entity.University;
 import com.dongbaeb.demo.exception.ResourceNotFoundException;
 import com.dongbaeb.demo.profile.dto.MemberRequest;
 import com.dongbaeb.demo.profile.dto.MemberResponse;
 import com.dongbaeb.demo.profile.repository.MemberRepository;
+import com.dongbaeb.demo.profile.repository.MemberUniversityRepository;
 import com.dongbaeb.demo.profile.repository.UniversityRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,7 @@ import java.util.List;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final UniversityRepository universityRepository;
+    private final MemberUniversityRepository memberUniversityRepository;
 
     @Transactional
     public MemberResponse createMember(MemberRequest memberRequest) {
@@ -26,18 +29,15 @@ public class MemberService {
                 .map(optionalUniversity -> optionalUniversity.orElseThrow(() -> new ResourceNotFoundException("해당 대학을 찾을 수 없습니다: " + optionalUniversity)))
                 .toList();
 
-        Member member = memberRequest.toMember(universities);
+        Member member = memberRequest.toMember();
         memberRepository.save(member);
 
-        return new MemberResponse(
-                member.getId(),
-                member.getRole(),
-                member.getName(),
-                member.getNickname(),
-                member.getProfileImageUrl(),
-                member.getStudentNo(),
-                universities.stream().map(University::getId).toList()
-        );
+        List<MemberUniversity> memberUniversities = universities.stream()
+                .map(university -> new MemberUniversity(member, university))
+                .toList();
+        memberUniversityRepository.saveAll(memberUniversities);
+
+        return MemberResponse.fromMember(member, universities);
     }
 
     @Transactional
@@ -50,28 +50,18 @@ public class MemberService {
                 .map(optionalUniversity -> optionalUniversity.orElseThrow(() -> new ResourceNotFoundException("해당 대학을 찾을 수 없습니다: " + optionalUniversity)))
                 .toList();
 
-        Member updateMemberEntity = Member.builder()
-                .id(existingMember.getId())
-                .kakaoId(memberRequest.kakaoId())
-                .role(memberRequest.role())
-                .name(memberRequest.name())
-                .nickname(memberRequest.nickname())
-                .profileImageUrl(memberRequest.profileImageUrl())
-                .studentNo(memberRequest.studentNo())
-                .universities(universities)
-                .build();
+        existingMember.update(memberRequest);
+        memberRepository.save(existingMember);
 
-        memberRepository.save(updateMemberEntity);
+        // 학교명 수정 시 기존 정보 삭제 후 생성
+        memberUniversityRepository.deleteByMember(existingMember);
 
-        new MemberResponse(
-                updateMemberEntity.getId(),
-                updateMemberEntity.getRole(),
-                updateMemberEntity.getName(),
-                updateMemberEntity.getNickname(),
-                updateMemberEntity.getProfileImageUrl(),
-                updateMemberEntity.getStudentNo(),
-                updateMemberEntity.getUniversities().stream().map(University::getId).toList()
-        );
+        List<MemberUniversity> memberUniversities = universities.stream()
+                .map(university -> new MemberUniversity(existingMember, university))
+                .toList();
+        memberUniversityRepository.saveAll(memberUniversities);
+
+        MemberResponse.fromMember(existingMember, universities);
     }
 
     @Transactional

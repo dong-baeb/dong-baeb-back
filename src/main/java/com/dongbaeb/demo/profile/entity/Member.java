@@ -1,5 +1,6 @@
 package com.dongbaeb.demo.profile.entity;
 
+import com.dongbaeb.demo.profile.dto.MemberRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,11 +25,15 @@ public class Member extends BaseEntity {
     private String profileImageUrl;
     private String studentNo;
 
-    @ManyToMany
-    @JoinTable(
-            name = "member_university",
-            joinColumns = @JoinColumn(name = "member_id"),
-            inverseJoinColumns = @JoinColumn(name = "university_id")
-    )
-    private List<University> universities;
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MemberUniversity> memberUniversities;
+
+    public void update(MemberRequest memberRequest) {
+        this.kakaoId = memberRequest.kakaoId();
+        this.role = memberRequest.role();
+        this.name = memberRequest.name();
+        this.nickname = memberRequest.nickname();
+        this.profileImageUrl = memberRequest.profileImageUrl();
+        this.studentNo = memberRequest.studentNo();
+    }
 }
