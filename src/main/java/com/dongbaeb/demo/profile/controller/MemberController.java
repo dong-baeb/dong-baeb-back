@@ -4,6 +4,7 @@ import com.dongbaeb.demo.profile.dto.MemberRequest;
 import com.dongbaeb.demo.profile.dto.MemberResponse;
 import com.dongbaeb.demo.profile.service.MemberService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,12 +12,9 @@ import java.net.URI;
 
 @RestController
 @RequestMapping("/members")
+@RequiredArgsConstructor
 public class MemberController {
     private final MemberService memberService;
-
-    public MemberController(MemberService memberService) {
-        this.memberService = memberService;
-    }
 
     @PostMapping
     public ResponseEntity<Long> createMember(@Valid @RequestBody MemberRequest memberRequest) {

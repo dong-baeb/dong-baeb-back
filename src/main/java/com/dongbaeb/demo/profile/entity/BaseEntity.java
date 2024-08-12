@@ -28,10 +28,6 @@ public abstract class BaseEntity {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public void updateTimestamps() {
-        this.updatedAt = LocalDateTime.now();
-    }
-
     public void markAsDeleted() {
         this.deletedAt = LocalDateTime.now();
     }

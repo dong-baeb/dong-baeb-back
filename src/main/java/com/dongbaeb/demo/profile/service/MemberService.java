@@ -7,37 +7,26 @@ import com.dongbaeb.demo.profile.dto.MemberRequest;
 import com.dongbaeb.demo.profile.dto.MemberResponse;
 import com.dongbaeb.demo.profile.repository.MemberRepository;
 import com.dongbaeb.demo.profile.repository.UniversityRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
     private final UniversityRepository universityRepository;
 
-    public MemberService(MemberRepository memberRepository, UniversityRepository universityRepository) {
-        this.memberRepository = memberRepository;
-        this.universityRepository = universityRepository;
-    }
-
     @Transactional
     public MemberResponse createMember(MemberRequest memberRequest) {
-        Member member = new Member();
-        member.setKakaoId(memberRequest.kakaoId());
-        member.setRole(memberRequest.role());
-        member.setName(memberRequest.name());
-        member.setNickname(memberRequest.nickname());
-        member.setProfileImageUrl(memberRequest.profileImageUrl());
-        member.setStudentNo(memberRequest.studentNo());
-
         List<University> universities = memberRequest.universityIds().stream()
                 .map(universityRepository::findById)
                 .map(optionalUniversity -> optionalUniversity.orElseThrow(() -> new ResourceNotFoundException("해당 대학을 찾을 수 없습니다: " + optionalUniversity)))
                 .toList();
 
-        member.setUniversities(universities);
+        Member member = memberRequest.toMember(universities);
         memberRepository.save(member);
 
         return new MemberResponse(
@@ -53,31 +42,35 @@ public class MemberService {
 
     @Transactional
     public void updateMember(Long id, MemberRequest memberRequest) {
-        Member member = memberRepository.findById(id)
+        Member existingMember = memberRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("해당 아이디를 가진 사용자를 찾을 수 없습니다: " + id));
-
-        member.setName(memberRequest.name());
-        member.setRole(memberRequest.role());
-        member.setNickname(memberRequest.nickname());
-        member.setProfileImageUrl(memberRequest.profileImageUrl());
-        member.setStudentNo(memberRequest.studentNo());
 
         List<University> universities = memberRequest.universityIds().stream()
                 .map(universityRepository::findById)
                 .map(optionalUniversity -> optionalUniversity.orElseThrow(() -> new ResourceNotFoundException("해당 대학을 찾을 수 없습니다: " + optionalUniversity)))
                 .toList();
 
-        member.setUniversities(universities);
+        Member updateMemberEntity = Member.builder()
+                .id(existingMember.getId())
+                .kakaoId(memberRequest.kakaoId())
+                .role(memberRequest.role())
+                .name(memberRequest.name())
+                .nickname(memberRequest.nickname())
+                .profileImageUrl(memberRequest.profileImageUrl())
+                .studentNo(memberRequest.studentNo())
+                .universities(universities)
+                .build();
 
-        Member updatedMember = memberRepository.save(member);
+        memberRepository.save(updateMemberEntity);
+
         new MemberResponse(
-                updatedMember.getId(),
-                updatedMember.getRole(),
-                updatedMember.getName(),
-                updatedMember.getNickname(),
-                updatedMember.getProfileImageUrl(),
-                updatedMember.getStudentNo(),
-                updatedMember.getUniversities().stream().map(University::getId).toList()
+                updateMemberEntity.getId(),
+                updateMemberEntity.getRole(),
+                updateMemberEntity.getName(),
+                updateMemberEntity.getNickname(),
+                updateMemberEntity.getProfileImageUrl(),
+                updateMemberEntity.getStudentNo(),
+                updateMemberEntity.getUniversities().stream().map(University::getId).toList()
         );
     }
 
