@@ -1,0 +1,16 @@
+server:
+  port: 8081
+oauth:
+  kakao:
+    app-key: ${KAKAO_APP_KEY}
+    redirect-url: ${KAKAO_REDIRECT_URL_LOCAL}
+    access-token-request-url: https://kauth.kakao.com/oauth/token
+    user-info-request-url: https://kapi.kakao.com/v2/user/me
+spring:
+  config:
+    import: file:.env[.properties]
+application:
+  name: DongBaeb
+jwt:
+  secret-key: ${JWT_TOKEN_SECRET_KEY}
+  access-expiration: 1800000
