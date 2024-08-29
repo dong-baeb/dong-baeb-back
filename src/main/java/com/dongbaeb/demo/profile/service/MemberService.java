@@ -1,22 +1,21 @@
 package com.dongbaeb.demo.profile.service;
 
-import com.dongbaeb.demo.profile.entity.Member;
-import com.dongbaeb.demo.profile.entity.MemberUniversity;
-import com.dongbaeb.demo.profile.entity.University;
 import com.dongbaeb.demo.exception.ResourceNotFoundException;
 import com.dongbaeb.demo.profile.dto.MemberRequest;
 import com.dongbaeb.demo.profile.dto.MemberResponse;
+import com.dongbaeb.demo.profile.entity.Member;
+import com.dongbaeb.demo.profile.entity.MemberUniversity;
+import com.dongbaeb.demo.profile.entity.University;
 import com.dongbaeb.demo.profile.repository.MemberRepository;
 import com.dongbaeb.demo.profile.repository.MemberUniversityRepository;
 import com.dongbaeb.demo.profile.repository.UniversityRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
-@Service
 @RequiredArgsConstructor
+@Service
 public class MemberService {
     private final MemberRepository memberRepository;
     private final UniversityRepository universityRepository;
@@ -26,7 +25,8 @@ public class MemberService {
     public MemberResponse createMember(MemberRequest memberRequest) {
         List<University> universities = memberRequest.universityIds().stream()
                 .map(universityRepository::findById)
-                .map(optionalUniversity -> optionalUniversity.orElseThrow(() -> new ResourceNotFoundException("해당 대학을 찾을 수 없습니다: " + optionalUniversity)))
+                .map(optionalUniversity -> optionalUniversity.orElseThrow(
+                        () -> new ResourceNotFoundException("해당 대학을 찾을 수 없습니다: " + optionalUniversity)))
                 .toList();
 
         Member member = memberRequest.toMember();
@@ -47,7 +47,8 @@ public class MemberService {
 
         List<University> universities = memberRequest.universityIds().stream()
                 .map(universityRepository::findById)
-                .map(optionalUniversity -> optionalUniversity.orElseThrow(() -> new ResourceNotFoundException("해당 대학을 찾을 수 없습니다: " + optionalUniversity)))
+                .map(optionalUniversity -> optionalUniversity.orElseThrow(
+                        () -> new ResourceNotFoundException("해당 대학을 찾을 수 없습니다: " + optionalUniversity)))
                 .toList();
 
         existingMember.update(memberRequest);

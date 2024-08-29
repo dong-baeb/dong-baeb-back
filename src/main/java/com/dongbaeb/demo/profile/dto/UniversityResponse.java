@@ -4,5 +4,4 @@ public record UniversityResponse(
         Long id,
         String name
 ) {
-
 }
