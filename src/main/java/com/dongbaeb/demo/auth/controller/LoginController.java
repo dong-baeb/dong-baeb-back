@@ -4,7 +4,7 @@ import com.dongbaeb.demo.auth.service.LoginService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class LoginController {
     private final LoginService loginService;
 
-    @GetMapping("/oauth-callback")
-    public ResponseEntity<String> login(@RequestParam(name = "code") String code) {
-        return ResponseEntity.ok(loginService.login(code));
+    @GetMapping("/kakao-login")
+    public ResponseEntity<String> kakaoLogin(@RequestHeader("Authorization") String authorizationHeader) {
+        return ResponseEntity.ok(loginService.kakaoLogin(authorizationHeader));
     }
 }
