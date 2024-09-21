@@ -1,5 +1,6 @@
 package com.dongbaeb.demo.auth.controller;
 
+import com.dongbaeb.demo.auth.dto.LoginResponse;
 import com.dongbaeb.demo.auth.service.LoginService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +14,7 @@ public class LoginController {
     private final LoginService loginService;
 
     @GetMapping("/kakao-login")
-    public ResponseEntity<String> kakaoLogin(@RequestHeader("Authorization") String authorizationHeader) {
+    public ResponseEntity<LoginResponse> kakaoLogin(@RequestHeader("Authorization") String authorizationHeader) {
         return ResponseEntity.ok(loginService.kakaoLogin(authorizationHeader));
     }
 }
