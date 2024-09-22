@@ -5,7 +5,7 @@ import io.micrometer.common.util.StringUtils;
 import org.springframework.stereotype.Component;
 
 @Component
-public class JwtTokenExtractor {
+public class AccessTokenExtractor {
     private static final String AUTHENTICATION_TYPE = "Bearer ";
 
     public String extractToken(String authorizationHeader) {

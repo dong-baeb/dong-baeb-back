@@ -1,6 +1,7 @@
 package com.dongbaeb.demo.auth.infrastructure;
 
-import com.dongbaeb.demo.auth.dto.kakao.KakaoUserInfoResponse;
+import com.dongbaeb.demo.auth.dto.kakao.KakaoUserInfo;
+import com.dongbaeb.demo.global.dto.AccessToken;
 import java.time.Duration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.ClientHttpRequestFactories;
@@ -34,13 +35,13 @@ public class KakaoOauthClient {
     }
 
     // TODO: 예외 처리 필요
-    public KakaoUserInfoResponse requestUserInfo(String accessToken) {
+    public KakaoUserInfo requestUserInfo(AccessToken accessToken) {
         return restClient.get()
                 .uri(userInfoRequestUrl)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken.accessToken())
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
-                .toEntity(KakaoUserInfoResponse.class)
+                .toEntity(KakaoUserInfo.class)
                 .getBody();
     }
 }
