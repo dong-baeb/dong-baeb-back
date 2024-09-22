@@ -1,12 +1,11 @@
-package com.dongbaeb.demo.profile.entity;
+package com.dongbaeb.demo.global.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
-import lombok.Getter;
-
 import java.time.LocalDateTime;
+import lombok.Getter;
 
 @Getter
 @MappedSuperclass
