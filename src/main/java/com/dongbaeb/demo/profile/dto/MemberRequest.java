@@ -7,8 +7,6 @@ import lombok.Builder;
 
 @Builder
 public record MemberRequest(
-        @NotBlank(message = "카카오 아이디는 필수 항목입니다.")
-        String kakaoId,
         @NotBlank(message = "직책은 필수 항목입니다.")
         String role,
         @NotBlank(message = "이름은 필수 항목입니다.")
@@ -22,11 +20,9 @@ public record MemberRequest(
 ) {
     public Member toMember() {
         return Member.builder()
-                .kakaoId(this.kakaoId)
                 .role(this.role)
                 .name(this.name)
                 .nickname(this.nickname)
-                .profileImageUrl(this.profileImageUrl)
                 .studentNo(this.studentNo)
                 .build();
     }
