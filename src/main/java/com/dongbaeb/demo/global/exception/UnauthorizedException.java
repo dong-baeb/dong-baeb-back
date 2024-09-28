@@ -1,4 +1,4 @@
-package com.dongbaeb.demo.exception;
+package com.dongbaeb.demo.global.exception;
 
 public class UnauthorizedException extends RuntimeException {
 
