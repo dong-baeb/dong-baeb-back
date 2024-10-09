@@ -2,13 +2,14 @@ package com.dongbaeb.demo.profile.repository;
 
 import com.dongbaeb.demo.profile.entity.Member;
 import com.dongbaeb.demo.profile.entity.MemberUniversity;
+import com.dongbaeb.demo.profile.entity.University;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
-@Repository
 public interface MemberUniversityRepository extends JpaRepository<MemberUniversity, Long> {
-    List<MemberUniversity> findByMember(Member member);
-    void deleteByMember(Member member);
+    Optional<MemberUniversity> findByMember(Member member);
+
+    boolean existsByMemberAndUniversity(Member member, University university);
+
+    void deleteByMemberAndUniversity(Member member, University university);
 }
