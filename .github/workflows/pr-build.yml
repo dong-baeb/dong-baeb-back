@@ -22,9 +22,10 @@ jobs:
 
       - name: .env 파일 생성
         run: |
-          echo "KAKAO_APP_KEY=${{ secrets.KAKAO_APP_KEY }}" > .env
-          echo "KAKAO_REDIRECT_URL_LOCAL=${{ secrets.KAKAO_REDIRECT_URL_LOCAL }}$" >> .env
-          echo "JWT_TOKEN_SECRET_KEY=${{ secrets.JWT_TOKEN_SECRET_KEY }}$" >> .env
+          echo "JWT_TOKEN_SECRET_KEY=${{ secrets.JWT_TOKEN_SECRET_KEY }}" > .env
+          echo "DEV_MYSQL_URL=${{ secrets.DEV_MYSQL_URL }}$" >> .env
+          echo "DEV_MYSQL_USER_NAME=${{ secrets.DEV_MYSQL_USER_NAME }}$" >> .env
+          echo "DEV_MYSQL_PASSWORD=${{ secrets.DEV_MYSQL_PASSWORD }}$" >> .env
 
       - name: 빌드 및 테스트
         run: ./gradlew build
