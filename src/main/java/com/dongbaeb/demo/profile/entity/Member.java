@@ -23,6 +23,7 @@ public class Member extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private Long kakaoId;
 
     @Column(nullable = false)
@@ -38,12 +39,6 @@ public class Member extends BaseEntity {
 
     private String studentNo;
 
-    public Member(String name) {
-        validateNameLength(name);
-
-        this.name = name;
-    }
-
     @Builder
     public Member(Long kakaoId, String role, String name, String nickname, String studentNo) {
         this.kakaoId = kakaoId;
@@ -51,14 +46,6 @@ public class Member extends BaseEntity {
         this.name = name;
         this.nickname = nickname;
         this.studentNo = studentNo;
-
-        validateNameLength(name);
-    }
-
-    private void validateNameLength(String name) {
-        if (name.length() > MAX_NAME_LENGTH) {
-            throw new IllegalArgumentException("멤버의 이름은 5글자 이하이어야 합니다.");
-        }
     }
 
     // TODO: 엔티티에 DTO 넘어오지 않게 수정하기
