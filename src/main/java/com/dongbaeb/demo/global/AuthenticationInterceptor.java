@@ -7,6 +7,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import java.io.IOException;
+
 @Component
 public class AuthenticationInterceptor implements HandlerInterceptor {
 
@@ -24,25 +26,26 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         String jwtToken = accessTokenExtractor.extractToken(token);
         System.out.println("토큰 정보: "+ jwtToken);
 
-        if (token == null || !isValidToken(jwtToken)) {
+        if (token == null || !isValidToken(jwtToken,response)) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
-            response.getWriter().write("토큰이 유효하지 않습니다.");
             return false;
         }
 
         return true;
     }
 
-    private boolean isValidToken(String jwtToken) {
+    private boolean isValidToken(String jwtToken,HttpServletResponse response) throws IOException {
         String issuer = jwtTokenProvider.getIssuer(jwtToken);
 
         if(!issuer.equals("DongBaeb")) {
+            response.getWriter().write("발급자가 유효하지 않습니다.");
             return false;
         }
 
         if(jwtTokenProvider.isExpired(jwtToken)) {
+            response.getWriter().write("토큰의 만료기간이 초과하였습니다.");
             return false;
         }
 
