@@ -21,4 +21,9 @@ public class RestExceptionHandler {
     public ResponseEntity<String> handleBadRequestException(BadRequestException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleBadException(Exception ex) {
+        return new ResponseEntity<>("서버에 문제가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }
