@@ -1,7 +1,7 @@
-package com.dongbaeb.demo.profile.dto;
+package com.dongbaeb.demo.member.dto;
 
-import com.dongbaeb.demo.profile.entity.Member;
-import com.dongbaeb.demo.profile.entity.University;
+import com.dongbaeb.demo.member.domain.Member;
+import com.dongbaeb.demo.member.domain.University;
 import java.util.List;
 import lombok.Builder;
 
@@ -13,7 +13,7 @@ public record MemberResponse(
         String nickname,
         String profileImageUrl,
         String studentNo,
-        List<Long> universityIds
+        List<String> universities
 ) {
     public static MemberResponse fromMember(Member member, List<University> universities) {
         return MemberResponse.builder()
@@ -23,7 +23,7 @@ public record MemberResponse(
                 .nickname(member.getNickname())
                 .profileImageUrl(member.getProfileImageUrl())
                 .studentNo(member.getStudentNo())
-                .universityIds(universities.stream().map(University::getId).toList())
+                .universities(universities.stream().map(University::getName).toList())
                 .build();
     }
 }

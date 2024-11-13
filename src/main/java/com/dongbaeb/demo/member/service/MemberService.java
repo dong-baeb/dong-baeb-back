@@ -1,14 +1,13 @@
-package com.dongbaeb.demo.profile.service;
+package com.dongbaeb.demo.member.service;
 
 import com.dongbaeb.demo.global.exception.ResourceNotFoundException;
-import com.dongbaeb.demo.profile.dto.MemberRequest;
-import com.dongbaeb.demo.profile.dto.MemberResponse;
-import com.dongbaeb.demo.profile.entity.Member;
-import com.dongbaeb.demo.profile.entity.MemberUniversity;
-import com.dongbaeb.demo.profile.entity.University;
-import com.dongbaeb.demo.profile.repository.MemberRepository;
-import com.dongbaeb.demo.profile.repository.MemberUniversityRepository;
-import com.dongbaeb.demo.profile.repository.UniversityRepository;
+import com.dongbaeb.demo.member.domain.Member;
+import com.dongbaeb.demo.member.domain.MemberUniversity;
+import com.dongbaeb.demo.member.domain.University;
+import com.dongbaeb.demo.member.dto.MemberRequest;
+import com.dongbaeb.demo.member.dto.MemberResponse;
+import com.dongbaeb.demo.member.repository.MemberRepository;
+import com.dongbaeb.demo.member.repository.MemberUniversityRepository;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -20,13 +19,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class MemberService {
     private final MemberRepository memberRepository;
-    private final UniversityRepository universityRepository;
     private final MemberUniversityRepository memberUniversityRepository;
 
     @Transactional
     public void updateMember(Long id, MemberRequest memberRequest) {
         Member member = findMember(id);
-        List<University> universities = findUniversities(memberRequest.universityIds());
+        List<University> universities = findUniversities(memberRequest.universities());
 
         member.update(memberRequest);
         updateMemberUniversities(member, universities);
@@ -57,14 +55,9 @@ public class MemberService {
                 .orElseThrow(() -> new ResourceNotFoundException("해당 아이디를 가진 사용자를 찾을 수 없습니다: " + id));
     }
 
-    private List<University> findUniversities(List<Long> universityIds) {
-        return universityIds.stream()
-                .map(this::findUniversity)
+    private List<University> findUniversities(List<String> universities) {
+        return universities.stream()
+                .map(University::fromName)
                 .toList();
-    }
-
-    private University findUniversity(Long id) {
-        return universityRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("해당 아이디를 가진 대학을 찾을 수 없습니다: " + id));
     }
 }

@@ -1,6 +1,6 @@
 package com.dongbaeb.demo.auth.dto;
 
-import com.dongbaeb.demo.profile.entity.Member;
+import com.dongbaeb.demo.member.domain.Member;
 import java.util.List;
 
 public record SignUpRequest(
@@ -8,7 +8,7 @@ public record SignUpRequest(
         String nickname,
         String role,
         String studentNo,
-        List<Long> universityId
+        List<String> universities
 ) {
     public Member toMember(Long kakaoId) {
         return Member.builder()

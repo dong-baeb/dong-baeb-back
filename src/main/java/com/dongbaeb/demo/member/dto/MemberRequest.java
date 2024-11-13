@@ -1,6 +1,6 @@
-package com.dongbaeb.demo.profile.dto;
+package com.dongbaeb.demo.member.dto;
 
-import com.dongbaeb.demo.profile.entity.Member;
+import com.dongbaeb.demo.member.domain.Member;
 import jakarta.validation.constraints.NotBlank;
 import java.util.List;
 import lombok.Builder;
@@ -16,7 +16,7 @@ public record MemberRequest(
         @NotBlank(message = "프로필 이미지는 필수 항목입니다.")
         String profileImageUrl,
         String studentNo,
-        List<Long> universityIds
+        List<String> universities
 ) {
     public Member toMember() {
         return Member.builder()
