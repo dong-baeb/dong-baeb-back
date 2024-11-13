@@ -1,7 +1,6 @@
 package com.dongbaeb.demo.member.domain;
 
 import com.dongbaeb.demo.global.entity.BaseEntity;
-import com.dongbaeb.demo.member.dto.MemberRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -18,7 +17,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
 public class Member extends BaseEntity {
-    private static final int MAX_NAME_LENGTH = 5;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -48,12 +46,10 @@ public class Member extends BaseEntity {
         this.studentNo = studentNo;
     }
 
-    // TODO: 엔티티에 DTO 넘어오지 않게 수정하기
-    public void update(MemberRequest memberRequest) {
-        this.role = memberRequest.role();
-        this.name = memberRequest.name();
-        this.nickname = memberRequest.nickname();
-        this.profileImageUrl = memberRequest.profileImageUrl();
-        this.studentNo = memberRequest.studentNo();
+    public void update(String role, String name, String nickname, String studentNo) {
+        this.role = role;
+        this.name = name;
+        this.nickname = nickname;
+        this.studentNo = studentNo;
     }
 }
