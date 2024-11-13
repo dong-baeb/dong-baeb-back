@@ -16,6 +16,4 @@ public record KakaoAccessTokenResponse(
         @JsonProperty("scope")
         String scope
 ) {
-
-
 }
