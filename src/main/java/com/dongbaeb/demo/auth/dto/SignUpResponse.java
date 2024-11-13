@@ -1,6 +1,6 @@
 package com.dongbaeb.demo.auth.dto;
 
-import com.dongbaeb.demo.profile.entity.Member;
+import com.dongbaeb.demo.member.domain.Member;
 
 public record SignUpResponse(
         Long id,

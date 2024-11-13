@@ -1,7 +1,7 @@
-package com.dongbaeb.demo.profile.controller;
+package com.dongbaeb.demo.member.controller;
 
-import com.dongbaeb.demo.profile.dto.MemberRequest;
-import com.dongbaeb.demo.profile.service.MemberService;
+import com.dongbaeb.demo.member.dto.MemberRequest;
+import com.dongbaeb.demo.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;

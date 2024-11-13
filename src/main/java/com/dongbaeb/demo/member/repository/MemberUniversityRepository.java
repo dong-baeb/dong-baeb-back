@@ -1,8 +1,8 @@
-package com.dongbaeb.demo.profile.repository;
+package com.dongbaeb.demo.member.repository;
 
-import com.dongbaeb.demo.profile.entity.Member;
-import com.dongbaeb.demo.profile.entity.MemberUniversity;
-import com.dongbaeb.demo.profile.entity.University;
+import com.dongbaeb.demo.member.domain.Member;
+import com.dongbaeb.demo.member.domain.MemberUniversity;
+import com.dongbaeb.demo.member.domain.University;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 

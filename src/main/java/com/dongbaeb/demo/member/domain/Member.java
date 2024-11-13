@@ -1,7 +1,7 @@
-package com.dongbaeb.demo.profile.entity;
+package com.dongbaeb.demo.member.domain;
 
 import com.dongbaeb.demo.global.entity.BaseEntity;
-import com.dongbaeb.demo.profile.dto.MemberRequest;
+import com.dongbaeb.demo.member.dto.MemberRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
