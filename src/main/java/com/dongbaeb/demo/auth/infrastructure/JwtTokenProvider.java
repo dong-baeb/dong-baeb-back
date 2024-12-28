@@ -2,10 +2,8 @@ package com.dongbaeb.demo.auth.infrastructure;
 
 import com.dongbaeb.demo.global.exception.UnauthorizedException;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.security.SignatureException;
 import java.util.Date;
 import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
@@ -52,37 +50,6 @@ public class JwtTokenProvider {
             throw new UnauthorizedException("JWT 토큰이 만료되었습니다.");
         } catch (Exception exception) {
             throw new UnauthorizedException("유효하지 않은 JWT 토큰입니다.");
-        }
-    }
-
-    public Boolean isExpired(String jwtToken) {
-        try {
-            return Jwts.parser()
-                    .verifyWith(secretKey)
-                    .build()
-                    .parseSignedClaims(jwtToken)
-                    .getPayload()
-                    .getExpiration()
-                    .before(new Date());
-        } catch (SignatureException e) {
-            return true;
-        } catch (JwtException e) {
-            return true;
-        }
-    }
-
-    public String getIssuer(String token) {
-        try {
-            return Jwts.parser()
-                    .verifyWith(secretKey)
-                    .build()
-                    .parseSignedClaims(token)
-                    .getPayload()
-                    .get("iss", String.class);
-        } catch (SignatureException e) {
-            return "Signature가 올바르지 않습니다.";
-        } catch (JwtException e) {
-            return "Jwt 예외 발생";
         }
     }
 }
