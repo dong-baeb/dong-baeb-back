@@ -11,5 +11,5 @@ public interface MemberUniversityRepository extends JpaRepository<MemberUniversi
 
     boolean existsByMemberAndUniversity(Member member, University university);
 
-    void deleteByMemberAndUniversity(Member member, University university);
+    void deleteByMember(Member member);
 }
