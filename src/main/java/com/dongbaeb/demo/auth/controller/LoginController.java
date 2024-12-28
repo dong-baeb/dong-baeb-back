@@ -15,7 +15,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,7 +40,7 @@ public class LoginController {
                     content = @Content(schema = @Schema(implementation = ExceptionResponse.class))
             )
     })
-    @GetMapping("/kakao-login")
+    @PostMapping("/kakao-login")
     public ResponseEntity<LoginResponse> kakaoLogin(KakaoUserInfo kakaoUserInfo) {
         return ResponseEntity.ok(loginService.kakaoLogin(kakaoUserInfo));
     }
