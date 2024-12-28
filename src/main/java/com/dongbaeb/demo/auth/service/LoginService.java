@@ -46,7 +46,7 @@ public class LoginService {
     }
 
     private void validateDuplicateByKakaoId(Long kakaoId) {
-        if (memberRepository.findByKakaoId(kakaoId).isPresent()) {
+        if (memberRepository.existsByKakaoId(kakaoId)) {
             throw new BadRequestException("이미 회원가입 된 카카오 유저입니다.");
         }
     }
