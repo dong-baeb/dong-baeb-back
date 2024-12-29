@@ -44,4 +44,9 @@ public class AuthenticationFilter extends OncePerRequestFilter {
         response.getWriter()
                 .write(objectMapper.writeValueAsString(new ErrorResponse(exception.getMessage())));
     }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        return PublicEndpoint.isPublic(request);
+    }
 }
