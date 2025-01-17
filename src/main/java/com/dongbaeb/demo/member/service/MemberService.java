@@ -24,7 +24,7 @@ public class MemberService {
     private final MemberUniversityRepository memberUniversityRepository;
 
     @Transactional
-    public void updateMember(Long id, MemberRequest memberRequest, MemberAuth memberAuth) {
+    public MemberResponse updateMember(Long id, MemberRequest memberRequest, MemberAuth memberAuth) {
         validateAuthority(id, memberAuth);
         Member member = findMember(id);
         List<University> universities = findUniversities(memberRequest.universities());
@@ -32,7 +32,7 @@ public class MemberService {
         member.update(memberRequest.role(), memberRequest.name(), memberRequest.nickname(), memberRequest.studentNo());
         updateMemberUniversities(member, universities);
 
-        MemberResponse.fromMember(member, universities);
+        return MemberResponse.fromMember(member, universities);
     }
 
     private void updateMemberUniversities(Member member, List<University> universities) {
@@ -55,7 +55,7 @@ public class MemberService {
 
     private void validateAuthority(Long id, MemberAuth memberAuth) {
         if (!Objects.equals(memberAuth.memberId(), id)) {
-            throw new ForbiddenException("권한이 없습니다.");
+            throw new ForbiddenException("다른 사용자의 정보를 수정, 삭제할 수 없습니다.");
         }
     }
 
