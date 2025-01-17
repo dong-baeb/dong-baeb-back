@@ -54,4 +54,8 @@ public class Member extends BaseEntity {
         this.nickname = nickname;
         this.studentNo = studentNo;
     }
+
+    public boolean isValidUniversitiesCount(int universitiesCount) {
+        return role.isValidUniversitiesCount(universitiesCount);
+    }
 }

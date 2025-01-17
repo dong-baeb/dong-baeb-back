@@ -1,6 +1,7 @@
 package com.dongbaeb.demo.member.service;
 
 import com.dongbaeb.demo.global.dto.MemberAuth;
+import com.dongbaeb.demo.global.exception.BadRequestException;
 import com.dongbaeb.demo.global.exception.ForbiddenException;
 import com.dongbaeb.demo.global.exception.ResourceNotFoundException;
 import com.dongbaeb.demo.member.domain.Member;
@@ -35,8 +36,15 @@ public class MemberService {
     }
 
     private void updateMemberUniversities(Member member, List<University> universities) {
+        validateUniversitiesCount(member, universities);
         memberUniversityRepository.deleteByMember(member);
         universities.forEach(university -> memberUniversityRepository.save(new MemberUniversity(member, university)));
+    }
+
+    private void validateUniversitiesCount(Member member, List<University> universities) {
+        if (!member.isValidUniversitiesCount(universities.size())) {
+            throw new BadRequestException("소속될 수 있는 학교의 개수가 올바르지 않습니다.");
+        }
     }
 
     @Transactional
