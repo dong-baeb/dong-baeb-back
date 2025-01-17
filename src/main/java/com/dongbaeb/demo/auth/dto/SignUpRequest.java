@@ -25,12 +25,6 @@ public record SignUpRequest(
         String profileImageUrl
 ) {
     public Member toMember(Long kakaoId) {
-        return Member.builder()
-                .kakaoId(kakaoId)
-                .name(name)
-                .nickname(nickname)
-                .role(role)
-                .studentNo(studentNo)
-                .build();
+        return new Member(kakaoId, role, name, nickname, profileImageUrl, studentNo);
     }
 }

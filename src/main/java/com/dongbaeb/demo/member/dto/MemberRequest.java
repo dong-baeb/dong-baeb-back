@@ -1,6 +1,5 @@
 package com.dongbaeb.demo.member.dto;
 
-import com.dongbaeb.demo.member.domain.Member;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -26,12 +25,4 @@ public record MemberRequest(
         @Schema(description = "프로필 이미지", example = "https://xxx.xxx.xxx")
         String profileImageUrl
 ) {
-    public Member toMember() {
-        return Member.builder()
-                .role(this.role)
-                .name(this.name)
-                .nickname(this.nickname)
-                .studentNo(this.studentNo)
-                .build();
-    }
 }
