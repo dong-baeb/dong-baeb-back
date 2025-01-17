@@ -1,5 +1,7 @@
 package com.dongbaeb.demo.member.service;
 
+import com.dongbaeb.demo.global.dto.MemberAuth;
+import com.dongbaeb.demo.global.exception.ForbiddenException;
 import com.dongbaeb.demo.global.exception.ResourceNotFoundException;
 import com.dongbaeb.demo.member.domain.Member;
 import com.dongbaeb.demo.member.domain.MemberUniversity;
@@ -9,6 +11,7 @@ import com.dongbaeb.demo.member.dto.MemberResponse;
 import com.dongbaeb.demo.member.repository.MemberRepository;
 import com.dongbaeb.demo.member.repository.MemberUniversityRepository;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +23,8 @@ public class MemberService {
     private final MemberUniversityRepository memberUniversityRepository;
 
     @Transactional
-    public void updateMember(Long id, MemberRequest memberRequest) {
+    public void updateMember(Long id, MemberRequest memberRequest, MemberAuth memberAuth) {
+        validateAuthority(id, memberAuth);
         Member member = findMember(id);
         List<University> universities = findUniversities(memberRequest.universities());
 
@@ -36,10 +40,15 @@ public class MemberService {
     }
 
     @Transactional
-    public void deleteMember(Long id) {
-        Member member = findMember(id);
-        memberRepository.delete(member);
-        memberUniversityRepository.deleteByMember(member);
+    public void deleteMember(Long id, MemberAuth memberAuth) {
+        validateAuthority(id, memberAuth);
+        memberRepository.delete(findMember(id));
+    }
+
+    private void validateAuthority(Long id, MemberAuth memberAuth) {
+        if (!Objects.equals(memberAuth.memberId(), id)) {
+            throw new ForbiddenException("권한이 없습니다.");
+        }
     }
 
     private Member findMember(Long id) {
