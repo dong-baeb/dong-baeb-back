@@ -3,6 +3,8 @@ package com.dongbaeb.demo.member.domain;
 import com.dongbaeb.demo.global.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -24,7 +26,8 @@ public class Member extends BaseEntity {
     private Long kakaoId;
 
     @Column(nullable = false)
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @Column(nullable = false)
     private String name;
@@ -38,7 +41,7 @@ public class Member extends BaseEntity {
 
     public Member(Long kakaoId, String role, String name, String nickname, String profileImageUrl, String studentNo) {
         this.kakaoId = kakaoId;
-        this.role = role;
+        this.role = Role.from(role);
         this.name = name;
         this.nickname = nickname;
         this.profileImageUrl = profileImageUrl;
@@ -46,7 +49,7 @@ public class Member extends BaseEntity {
     }
 
     public void update(String role, String name, String nickname, String studentNo) {
-        this.role = role;
+        this.role = Role.from(role);
         this.name = name;
         this.nickname = nickname;
         this.studentNo = studentNo;

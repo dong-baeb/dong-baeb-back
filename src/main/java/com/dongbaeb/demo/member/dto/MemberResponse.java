@@ -26,7 +26,7 @@ public record MemberResponse(
     public static MemberResponse fromMember(Member member, List<University> universities) {
         return MemberResponse.builder()
                 .id(member.getId())
-                .role(member.getRole())
+                .role(member.getRole().getName())
                 .name(member.getName())
                 .nickname(member.getNickname())
                 .profileImageUrl(member.getProfileImageUrl())
