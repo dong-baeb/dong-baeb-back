@@ -1,12 +1,13 @@
-package com.dongbaeb.demo.auth.dto;
+package com.dongbaeb.demo.member.dto;
 
-import com.dongbaeb.demo.member.domain.Member;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import java.util.List;
+import lombok.Builder;
 
-public record SignUpRequest(
+@Builder
+public record MemberRequest(
         @Schema(description = "이름", example = "동백")
         @NotBlank(message = "이름은 필수 항목입니다.")
         String name,
@@ -24,7 +25,4 @@ public record SignUpRequest(
         @Schema(description = "프로필 이미지", example = "https://xxx.xxx.xxx")
         String profileImageUrl
 ) {
-    public Member toMember(Long kakaoId) {
-        return new Member(kakaoId, role, name, nickname, profileImageUrl, studentNo);
-    }
 }

@@ -38,6 +38,4 @@ public class KakaoUserInfoArgumentResolver implements HandlerMethodArgumentResol
 
         return kakaoOauthClient.requestUserInfo(new AccessToken(kakaoAccessToken));
     }
-
-
 }

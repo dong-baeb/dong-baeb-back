@@ -29,7 +29,7 @@ public class JwtTokenProvider {
         Date now = new Date();
 
         return Jwts.builder()
-                .claim(MEMBER_ID_KEY, memberId)
+                .claim(MEMBER_ID_KEY, String.valueOf(memberId))
                 .issuer(issuer)
                 .expiration(new Date(now.getTime() + accessExpiration))
                 .signWith(secretKey)
@@ -38,12 +38,7 @@ public class JwtTokenProvider {
 
     public Long extractMemberId(String jwtToken) {
         try {
-            return Jwts.parser()
-                    .verifyWith(secretKey)
-                    .build()
-                    .parseSignedClaims(jwtToken)
-                    .getPayload()
-                    .get(MEMBER_ID_KEY, Long.class);
+            return Long.valueOf(extract(jwtToken));
         } catch (IllegalArgumentException exception) {
             throw new UnauthorizedException("JWT 토큰이 비어있습니다.");
         } catch (ExpiredJwtException exception) {
@@ -51,5 +46,14 @@ public class JwtTokenProvider {
         } catch (Exception exception) {
             throw new UnauthorizedException("유효하지 않은 JWT 토큰입니다.");
         }
+    }
+
+    private String extract(String jwtToken) {
+        return Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(jwtToken)
+                .getPayload()
+                .get(MEMBER_ID_KEY, String.class);
     }
 }

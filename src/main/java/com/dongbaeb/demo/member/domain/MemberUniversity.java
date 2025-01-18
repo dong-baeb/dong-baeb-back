@@ -1,6 +1,9 @@
-package com.dongbaeb.demo.profile.entity;
+package com.dongbaeb.demo.member.domain;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -22,8 +25,8 @@ public class MemberUniversity {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @ManyToOne
-    @JoinColumn(name = "university_id")
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private University university;
 
     public MemberUniversity(Member member, University university) {
