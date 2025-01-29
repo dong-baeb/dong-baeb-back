@@ -7,12 +7,11 @@ import com.dongbaeb.demo.auth.dto.SignUpResponse;
 import com.dongbaeb.demo.auth.dto.kakao.KakaoUserInfo;
 import com.dongbaeb.demo.auth.infrastructure.JwtTokenProvider;
 import com.dongbaeb.demo.global.exception.BadRequestException;
-import com.dongbaeb.demo.profile.entity.Member;
-import com.dongbaeb.demo.profile.entity.MemberUniversity;
-import com.dongbaeb.demo.profile.entity.University;
-import com.dongbaeb.demo.profile.repository.MemberRepository;
-import com.dongbaeb.demo.profile.repository.MemberUniversityRepository;
-import com.dongbaeb.demo.profile.repository.UniversityRepository;
+import com.dongbaeb.demo.member.domain.Member;
+import com.dongbaeb.demo.member.domain.MemberUniversity;
+import com.dongbaeb.demo.member.domain.University;
+import com.dongbaeb.demo.member.repository.MemberRepository;
+import com.dongbaeb.demo.member.repository.MemberUniversityRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class LoginService {
     private final MemberRepository memberRepository;
-    private final UniversityRepository universityRepository;
     private final MemberUniversityRepository memberUniversityRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -38,7 +36,7 @@ public class LoginService {
         Long kakaoId = kakaoUserInfo.kakaoId();
         validateDuplicateByKakaoId(kakaoId);
         Member newMember = memberRepository.save(signUpRequest.toMember(kakaoId));
-        saveMemberUniversity(newMember, signUpRequest.universityId());
+        saveMemberUniversity(newMember, signUpRequest.universities());
 
         return SignUpResponse.from(newMember, getAccessToken(newMember));
     }
@@ -48,19 +46,22 @@ public class LoginService {
     }
 
     private void validateDuplicateByKakaoId(Long kakaoId) {
-        if (memberRepository.findByKakaoId(kakaoId).isPresent()) {
+        if (memberRepository.existsByKakaoId(kakaoId)) {
             throw new BadRequestException("이미 회원가입 된 카카오 유저입니다.");
         }
     }
 
-    private void saveMemberUniversity(Member member, List<Long> universityIds) {
-        universityIds.stream()
-                .map(this::findUniversity)
+    private void saveMemberUniversity(Member member, List<String> universities) {
+        validateUniversitiesCount(member, universities);
+        universities.stream()
+                .map(University::fromName)
                 .forEach(university -> memberUniversityRepository.save(new MemberUniversity(member, university)));
     }
 
-    private University findUniversity(Long id) {
-        return universityRepository.findById(id)
-                .orElseThrow(() -> new BadRequestException("해당 id의 학교가 존재하지 않습니다."));
+    // TODO: MemberService 쪽과 통합하기
+    private void validateUniversitiesCount(Member member, List<String> universities) {
+        if (!member.isValidUniversitiesCount(universities.size())) {
+            throw new BadRequestException("소속될 수 있는 학교의 개수가 올바르지 않습니다.");
+        }
     }
 }

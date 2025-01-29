@@ -1,7 +1,8 @@
-package com.dongbaeb.demo.profile.controller;
+package com.dongbaeb.demo.member.controller;
 
-import com.dongbaeb.demo.profile.dto.MemberRequest;
-import com.dongbaeb.demo.profile.service.MemberService;
+import com.dongbaeb.demo.global.dto.MemberAuth;
+import com.dongbaeb.demo.member.dto.MemberRequest;
+import com.dongbaeb.demo.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -32,8 +33,10 @@ public class MemberController {
                     description = "수정 요청 Request Body",
                     content = @Content(schema = @Schema(implementation = MemberRequest.class))
             )
-            @Valid @RequestBody MemberRequest memberRequest) {
-        memberService.updateMember(id, memberRequest);
+            @Valid @RequestBody MemberRequest memberRequest,
+            MemberAuth memberAuth
+    ) {
+        memberService.updateMember(id, memberRequest, memberAuth);
         return ResponseEntity.noContent()
                 .build();
     }
@@ -42,8 +45,10 @@ public class MemberController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteMember(
             @Parameter(description = "삭제할 Member의 Id번호")
-            @PathVariable(name = "id") Long id) {
-        memberService.deleteMember(id);
+            @PathVariable(name = "id") Long id,
+            MemberAuth memberAuth
+    ) {
+        memberService.deleteMember(id, memberAuth);
         return ResponseEntity.noContent()
                 .build();
     }

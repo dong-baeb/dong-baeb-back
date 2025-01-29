@@ -2,6 +2,10 @@ package com.dongbaeb.demo.auth.infrastructure;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
+
+import com.dongbaeb.demo.global.exception.UnauthorizedException;
+import io.jsonwebtoken.ExpiredJwtException;
+
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import java.util.Date;
@@ -13,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class JwtTokenProvider {
+    private static final String MEMBER_ID_KEY = "member_id";
     private final String issuer;
     private final Long accessExpiration;
     private final SecretKey secretKey;
@@ -30,41 +35,32 @@ public class JwtTokenProvider {
         Date now = new Date();
 
         return Jwts.builder()
-                .claim("member_id", memberId)
+                .claim(MEMBER_ID_KEY, String.valueOf(memberId))
                 .issuer(issuer)
                 .expiration(new Date(now.getTime() + accessExpiration))
                 .signWith(secretKey)
                 .compact();
     }
 
-    public Boolean isExpired(String jwtToken) {
+    public Long extractMemberId(String jwtToken) {
         try {
-            return Jwts.parser()
-                    .verifyWith(secretKey)
-                    .build()
-                    .parseSignedClaims(jwtToken)
-                    .getPayload()
-                    .getExpiration()
-                    .before(new Date());
-        } catch (SignatureException e) {
-            return true;
-        } catch (JwtException e) {
-            return true;
+            return Long.valueOf(extract(jwtToken));
+        } catch (IllegalArgumentException exception) {
+            throw new UnauthorizedException("JWT 토큰이 비어있습니다.");
+        } catch (ExpiredJwtException exception) {
+            throw new UnauthorizedException("JWT 토큰이 만료되었습니다.");
+        } catch (Exception exception) {
+            throw new UnauthorizedException("유효하지 않은 JWT 토큰입니다.");
         }
     }
 
-    public String getIssuer(String token) {
-        try {
-            return Jwts.parser()
-                    .verifyWith(secretKey)
-                    .build()
-                    .parseSignedClaims(token)
-                    .getPayload()
-                    .get("iss", String.class);
-        } catch (SignatureException e) {
-            return "Signature가 올바르지 않습니다.";
-        } catch (JwtException e) {
-            return "Jwt 예외 발생";
-        }
+    private String extract(String jwtToken) {
+        return Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(jwtToken)
+                .getPayload()
+                .get(MEMBER_ID_KEY, String.class);
+
     }
 }
