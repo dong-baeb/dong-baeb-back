@@ -1,5 +1,6 @@
 package com.dongbaeb.demo.notification.controller;
 
+import com.dongbaeb.demo.member.domain.University;
 import com.dongbaeb.demo.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.apache.catalina.connector.Response;
@@ -20,6 +21,12 @@ public class NotificationController {
     @GetMapping("/councils/{page}")
     public ResponseEntity<?> getAllCouncilsNotification(@PathVariable("page") Integer page) {
         ResponseEntity<?> response = notificationService.getAllCouncilsNotification(page);
+        return response;
+    }
+
+    @GetMapping("/university/{name}")
+    public ResponseEntity<?> getByUniversityName(@PathVariable("name") University name) {
+        ResponseEntity<?> response = notificationService.getByUniversityName(name);
         return response;
     }
 }

@@ -1,5 +1,6 @@
 package com.dongbaeb.demo.notification.service;
 
+import com.dongbaeb.demo.member.domain.University;
 import com.dongbaeb.demo.notification.domain.Notification;
 import com.dongbaeb.demo.notification.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,5 +26,10 @@ public class NotificationService {
         int offset = (page - 1) * pageSize;
         ArrayList<Notification> notifications = notificationRepository.findPagedWholeEntities(pageSize,offset);
         return new ResponseEntity<>(notifications, HttpStatusCode.valueOf(200));
+    }
+
+    public ResponseEntity<?> getByUniversityName(University name) {
+        ArrayList<Notification> notifications = notificationRepository.findByUniversity(name);
+        return new ResponseEntity<>(notifications,HttpStatusCode.valueOf(200));
     }
 }

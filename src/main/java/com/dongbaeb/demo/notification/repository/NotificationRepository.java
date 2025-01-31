@@ -1,5 +1,6 @@
 package com.dongbaeb.demo.notification.repository;
 
+import com.dongbaeb.demo.member.domain.University;
 import com.dongbaeb.demo.notification.domain.Notification;
 import org.hibernate.query.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,7 +14,15 @@ public interface NotificationRepository extends JpaRepository<Notification,Long>
 
     ArrayList<Notification> findAll();
 
-    @Query(value = "SELECT * FROM notification WHERE is_whole = true ORDER BY id ASC LIMIT :limit OFFSET :offset", nativeQuery = true)
+    @Query(value = "SELECT * " +
+            "FROM notification " +
+            "WHERE is_whole = true " +
+            "ORDER BY id ASC " +
+            "LIMIT :limit " +
+            "OFFSET :offset",
+            nativeQuery = true)
+
     ArrayList<Notification> findPagedWholeEntities(@Param("limit") int limit, @Param("offset") int offset);
 
+    ArrayList<Notification> findByUniversity(University name);
 }

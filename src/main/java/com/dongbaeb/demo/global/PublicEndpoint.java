@@ -13,7 +13,7 @@ public enum PublicEndpoint {
     SWAGGER_RESOURCE(HttpMethod.GET, "/swagger-resources/**"),
     API_DOCS(HttpMethod.GET, "/v3/api-docs/**"),
 
-    NOTIFICATION_GET(HttpMethod.GET,"/notification/councils/**")
+//    NOTIFICATION_GET(HttpMethod.GET,"/notification/**")
     ;
 
     private static final List<PublicEndpoint> PUBLIC_ENDPOINTS = Arrays.asList(values());
