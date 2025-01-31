@@ -19,31 +19,31 @@ public class Notification extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(name = "title",nullable = false)
     private String title;
 
-    @Column
+    @Column(name = "content",nullable = false)
     private String content;
 
     @ManyToOne
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id",nullable = false)
     private Member member;
 
-    @Column
+    @Column(name = "university")
     @Enumerated(EnumType.STRING)
     private University university;
 
     //전체 공지인지 여부 (대학교와 합칠 수 있지 않을까?)
-    @Column
-    private Boolean isWholeNotification;
+    @Column(name = "is_whole",nullable = false)
+    private Boolean isWhole;
 
     //사진 url??
 
-    public Notification(String title, String content,Member member,University university,Boolean isWholeNotification) {
+    public Notification(String title, String content,Member member,University university,Boolean isWhole) {
         this.title = title;
         this.content = content;
         this.member = member;
         this.university = university;
-        this.isWholeNotification = isWholeNotification;
+        this.isWhole = isWhole;
     }
 }
