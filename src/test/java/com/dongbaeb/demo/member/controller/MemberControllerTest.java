@@ -20,7 +20,7 @@ import org.springframework.test.context.TestPropertySource;
 
 @TestPropertySource(properties = {"spring.config.location = classpath:test-application.yml"})
 @ActiveProfiles("test")
-@SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 class MemberControllerTest {
     @Autowired
     MemberRepository memberRepository;

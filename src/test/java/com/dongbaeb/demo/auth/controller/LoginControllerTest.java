@@ -31,7 +31,7 @@ import org.springframework.test.context.TestPropertySource;
 // TODO: 테스트 격리(데이터베이스 초기화)
 @TestPropertySource(properties = {"spring.config.location = classpath:test-application.yml"})
 @ActiveProfiles("test")
-@SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 class LoginControllerTest {
     @Autowired
     ObjectMapper objectMapper;
