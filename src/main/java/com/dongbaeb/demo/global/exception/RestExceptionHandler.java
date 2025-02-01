@@ -23,8 +23,13 @@ public class RestExceptionHandler {
         return new ResponseEntity<>(new ExceptionResponse(ex.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<ExceptionResponse> handleForbiddenException(ForbiddenException ex) {
+        return new ResponseEntity<>(new ExceptionResponse(ex.getMessage()), HttpStatus.FORBIDDEN);
+    }
+
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ExceptionResponse> handleBadException(Exception ex) {
+    public ResponseEntity<ExceptionResponse> handleException(Exception ex) {
         return new ResponseEntity<>(new ExceptionResponse("서버에 문제가 발생했습니다."), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
