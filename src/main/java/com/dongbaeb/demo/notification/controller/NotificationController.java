@@ -1,5 +1,6 @@
 package com.dongbaeb.demo.notification.controller;
 
+import com.dongbaeb.demo.global.dto.MemberAuth;
 import com.dongbaeb.demo.member.domain.University;
 import com.dongbaeb.demo.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
@@ -25,8 +26,8 @@ public class NotificationController {
     }
 
     @GetMapping("/university/{name}")
-    public ResponseEntity<?> getByUniversityName(@PathVariable("name") University name) {
-        ResponseEntity<?> response = notificationService.getByUniversityName(name);
+    public ResponseEntity<?> getByUniversityName(@PathVariable("name") University name, MemberAuth memberAuth) {
+        ResponseEntity<?> response = notificationService.getByUniversityName(name, memberAuth);
         return response;
     }
 }
