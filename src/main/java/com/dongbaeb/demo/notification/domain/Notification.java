@@ -48,7 +48,7 @@ public class Notification extends BaseEntity {
     private LocalDate endDate;
 
     public Notification(String category, Member author, String title, String content, LocalDate start, LocalDate end) {
-        validateDate(startDate, endDate);
+        validateDate(start, end);
         this.notificationCategory = NotificationCategory.form(category);
         this.author = author;
         this.title = title;
