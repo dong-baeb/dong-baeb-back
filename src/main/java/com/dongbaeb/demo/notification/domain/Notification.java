@@ -70,4 +70,8 @@ public class Notification extends BaseEntity {
     public boolean isValidUniversityCount(int universityCount) {
         return notificationCategory.isValidUniversityCount(universityCount);
     }
+
+    public boolean isStartDateBefore(LocalDate localDate) {
+        return startDate.isBefore(localDate);
+    }
 }

@@ -14,6 +14,7 @@ import com.dongbaeb.demo.notification.dto.NotificationRequest;
 import com.dongbaeb.demo.notification.repository.NotificationPhotoRepository;
 import com.dongbaeb.demo.notification.repository.NotificationRepository;
 import com.dongbaeb.demo.notification.repository.NotificationUniversityRepository;
+import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -59,9 +60,16 @@ public class NotificationService {
     }
 
     private void createNotification(Notification notification, Member author, List<University> universities) {
+        validateStartDate(notification);
         validateUniversityCount(notification, universities);
         validateAuthorization(notification, author, universities);
         notificationRepository.save(notification);
+    }
+
+    private void validateStartDate(Notification notification) {
+        if (notification.isStartDateBefore(LocalDate.now())) {
+            throw new BadRequestException("시작 날짜는 오늘보다 이전일 수 없습니다.");
+        }
     }
 
     private void validateAuthorization(Notification notification, Member author, List<University> universities) {
