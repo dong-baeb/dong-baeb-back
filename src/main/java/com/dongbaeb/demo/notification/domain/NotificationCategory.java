@@ -12,13 +12,13 @@ public enum NotificationCategory {
     UNIVERSITY("학교", count -> count >= 1, Set.of(Role.MISSIONARY, Role.LEADER));
 
     private final String category;
-    private final IntPredicate universitiesCountPredicate;
+    private final IntPredicate universityCountPredicate;
     private final Set<Role> allowedRoles;
 
 
-    NotificationCategory(String category, IntPredicate universitiesCountPredicate, Set<Role> availableRoles) {
+    NotificationCategory(String category, IntPredicate universityCountPredicate, Set<Role> availableRoles) {
         this.category = category;
-        this.universitiesCountPredicate = universitiesCountPredicate;
+        this.universityCountPredicate = universityCountPredicate;
         this.allowedRoles = EnumSet.copyOf(availableRoles);
     }
 
@@ -33,10 +33,10 @@ public enum NotificationCategory {
         return allowedRoles.contains(role);
     }
 
-    public boolean isValidUniversitiesCount(int universitiesCount) {
-        if (universitiesCount < 0) {
+    public boolean isValidUniversityCount(int universityCount) {
+        if (universityCount < 0) {
             throw new IllegalArgumentException("학교 수는 양수이어야 합니다.");
         }
-        return universitiesCountPredicate.test(universitiesCount);
+        return universityCountPredicate.test(universityCount);
     }
 }

@@ -68,6 +68,6 @@ public class Notification extends BaseEntity {
     }
 
     public boolean isValidUniversityCount(int universityCount) {
-        return notificationCategory.isValidUniversitiesCount(universityCount);
+        return notificationCategory.isValidUniversityCount(universityCount);
     }
 }

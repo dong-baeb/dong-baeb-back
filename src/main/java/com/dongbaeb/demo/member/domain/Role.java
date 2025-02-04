@@ -12,11 +12,11 @@ public enum Role {
     BACHELOR("학사", count -> count == 1);
 
     private final String name;
-    private final IntPredicate universitiesCountPredicate;
+    private final IntPredicate universityCountPredicate;
 
-    Role(String name, IntPredicate universitiesCountPredicate) {
+    Role(String name, IntPredicate universityCountPredicate) {
         this.name = name;
-        this.universitiesCountPredicate = universitiesCountPredicate;
+        this.universityCountPredicate = universityCountPredicate;
     }
 
     public static Role from(String name) {
@@ -26,11 +26,11 @@ public enum Role {
                 .orElseThrow(() -> new BadRequestException("해당 " + name + "에 해당되는 역할이 존재하지 않습니다."));
     }
 
-    public boolean isValidUniversitiesCount(int universitiesCount) {
-        if (universitiesCount < 0) {
+    public boolean isValidUniversityCount(int universityCount) {
+        if (universityCount < 0) {
             throw new IllegalArgumentException("학교 수는 양수이어야 합니다.");
         }
-        return universitiesCountPredicate.test(universitiesCount);
+        return universityCountPredicate.test(universityCount);
     }
 
     public String getName() {

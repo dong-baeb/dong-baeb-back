@@ -55,8 +55,8 @@ public class Member extends BaseEntity {
         this.studentNo = studentNo;
     }
 
-    public boolean isValidUniversitiesCount(int universitiesCount) {
-        return role.isValidUniversitiesCount(universitiesCount);
+    public boolean isValidUniversityCount(int universityCount) {
+        return role.isValidUniversityCount(universityCount);
     }
 
     public boolean isLeader() {
