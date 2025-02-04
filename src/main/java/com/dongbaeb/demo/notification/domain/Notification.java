@@ -66,4 +66,8 @@ public class Notification extends BaseEntity {
     public boolean isRoleAllowed() {
         return notificationCategory.isRoleAllowed(author.getRole());
     }
+
+    public boolean isValidUniversityCount(int universityCount) {
+        return notificationCategory.isValidUniversitiesCount(universityCount);
+    }
 }

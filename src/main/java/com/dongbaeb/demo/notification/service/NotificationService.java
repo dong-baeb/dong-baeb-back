@@ -52,7 +52,14 @@ public class NotificationService {
                 .toList();
     }
 
+    private void validateUniversityCount(Notification notification, List<University> universities) {
+        if (!notification.isValidUniversityCount(universities.size())) {
+            throw new BadRequestException("공지의 학교 개수가 올바르지 않습니다.");
+        }
+    }
+
     private void createNotification(Notification notification, Member author, List<University> universities) {
+        validateUniversityCount(notification, universities);
         validateAuthorization(notification, author, universities);
         notificationRepository.save(notification);
     }
