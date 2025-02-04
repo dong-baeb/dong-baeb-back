@@ -30,8 +30,8 @@ public class NotificationUniversity {
     @Column(nullable = false)
     private University university;
 
-    public NotificationUniversity(Notification notification, String university) {
+    public NotificationUniversity(Notification notification, University university) {
         this.notification = notification;
-        this.university = University.fromName(university);
+        this.university = university;
     }
 }

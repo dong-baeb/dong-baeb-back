@@ -62,4 +62,8 @@ public class Notification extends BaseEntity {
             throw new BadRequestException("시작 날짜는 끝 날짜보다 클 수 없습니다.");
         }
     }
+
+    public boolean isRoleAllowed() {
+        return notificationCategory.isAllowed(author.getRole());
+    }
 }

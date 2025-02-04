@@ -58,4 +58,8 @@ public class Member extends BaseEntity {
     public boolean isValidUniversitiesCount(int universitiesCount) {
         return role.isValidUniversitiesCount(universitiesCount);
     }
+
+    public boolean isLeader() {
+        return role.equals(Role.LEADER);
+    }
 }
