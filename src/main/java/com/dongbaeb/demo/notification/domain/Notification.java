@@ -59,8 +59,13 @@ public class Notification extends BaseEntity {
 
     private void validateDate(LocalDate startDate, LocalDate endDate) {
         if (startDate.isAfter(endDate)) {
-            throw new BadRequestException("시작 날짜는 끝 날짜보다 클 수 없습니다.");
+            throw new BadRequestException("공지의 끝 날짜는 시작 날짜를 앞설 수 없습니다.");
         }
+    }
+
+    public boolean isNotificationFuture() {
+        LocalDate now = LocalDate.now();
+        return startDate.isEqual(now) || startDate.isAfter(now);
     }
 
     public boolean isRoleAllowed() {
@@ -69,9 +74,5 @@ public class Notification extends BaseEntity {
 
     public boolean isValidUniversityCount(int universityCount) {
         return notificationCategory.isValidUniversityCount(universityCount);
-    }
-
-    public boolean isStartDateBefore(LocalDate localDate) {
-        return startDate.isBefore(localDate);
     }
 }

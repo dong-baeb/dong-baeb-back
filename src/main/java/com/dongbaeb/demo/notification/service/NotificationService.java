@@ -14,7 +14,6 @@ import com.dongbaeb.demo.notification.dto.NotificationRequest;
 import com.dongbaeb.demo.notification.repository.NotificationPhotoRepository;
 import com.dongbaeb.demo.notification.repository.NotificationRepository;
 import com.dongbaeb.demo.notification.repository.NotificationUniversityRepository;
-import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -67,8 +66,8 @@ public class NotificationService {
     }
 
     private void validateStartDate(Notification notification) {
-        if (notification.isStartDateBefore(LocalDate.now())) {
-            throw new BadRequestException("시작 날짜는 오늘보다 이전일 수 없습니다.");
+        if (notification.isNotificationFuture()) {
+            throw new BadRequestException("과거 날짜에 대한 공지는 작성할 수 없습니다.");
         }
     }
 
