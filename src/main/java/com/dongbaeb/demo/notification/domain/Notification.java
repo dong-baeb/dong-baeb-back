@@ -47,14 +47,19 @@ public class Notification extends BaseEntity {
     @Column(nullable = false)
     private LocalDate endDate;
 
-    public Notification(String category, Member author, String title, String content, LocalDate start, LocalDate end) {
+    public Notification(NotificationCategory category, Member author, String title, String content, LocalDate start,
+                        LocalDate end) {
         validateDate(start, end);
-        this.notificationCategory = NotificationCategory.from(category);
+        this.notificationCategory = category;
         this.author = author;
         this.title = title;
         this.content = content;
         this.startDate = start;
         this.endDate = end;
+    }
+
+    public Notification(String category, Member author, String title, String content, LocalDate start, LocalDate end) {
+        this(NotificationCategory.from(category), author, title, content, start, end);
     }
 
     private void validateDate(LocalDate startDate, LocalDate endDate) {
