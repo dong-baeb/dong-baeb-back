@@ -39,13 +39,17 @@ public class Member extends BaseEntity {
 
     private String studentNo;
 
-    public Member(Long kakaoId, String role, String name, String nickname, String profileImageUrl, String studentNo) {
+    public Member(Long kakaoId, Role role, String name, String nickname, String profileImageUrl, String studentNo) {
         this.kakaoId = kakaoId;
-        this.role = Role.from(role);
+        this.role = role;
         this.name = name;
         this.nickname = nickname;
         this.profileImageUrl = profileImageUrl;
         this.studentNo = studentNo;
+    }
+
+    public Member(Long kakaoId, String role, String name, String nickname, String profileImageUrl, String studentNo) {
+        this(kakaoId, Role.from(role), name, nickname, profileImageUrl, studentNo);
     }
 
     public void update(String role, String name, String nickname, String studentNo) {
