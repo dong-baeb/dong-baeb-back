@@ -22,7 +22,7 @@ public enum NotificationCategory {
         this.allowedRoles = EnumSet.copyOf(availableRoles);
     }
 
-    public static NotificationCategory form(String category) {
+    public static NotificationCategory from(String category) {
         return Arrays.stream(values())
                 .filter(notificationCategory -> category.equals(notificationCategory.category))
                 .findAny()
