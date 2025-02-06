@@ -23,7 +23,7 @@ class RoleTest {
 
     @DisplayName("멤버, 리더, 학사는 1개의 학교에만 소속될 수 있다.")
     @ParameterizedTest
-    @EnumSource(value = Role.class, names = {"MEMBER", "LEADER", "BACHELOR"})
+    @EnumSource(value = Role.class, names = {"MEMBER", "LEADER", "GRADUATE"})
     void isValidUniversityCountWithStudentTrueTest(Role role) {
         assertThat(role.isValidUniversityCount(1))
                 .isTrue();
@@ -31,7 +31,7 @@ class RoleTest {
 
     @DisplayName("멤버, 리더, 학사는 0개나 2개 이상의 학교에 소속될 수 없다.")
     @ParameterizedTest
-    @EnumSource(value = Role.class, names = {"MEMBER", "LEADER", "BACHELOR"})
+    @EnumSource(value = Role.class, names = {"MEMBER", "LEADER", "GRADUATE"})
     void isValidUniversityCountWithStudentFalseTest(Role role) {
         assertAll(
                 () -> assertThat(role.isValidUniversityCount(0)).isFalse(),

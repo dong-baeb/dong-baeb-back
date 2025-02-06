@@ -9,7 +9,7 @@ public enum Role {
     MEMBER("멤버", count -> count == 1),
     LEADER("리더", count -> count == 1),
     MISSIONARY("간사", count -> true),
-    BACHELOR("학사", count -> count == 1);
+    GRADUATE("학사", count -> count == 1);
 
     private final String name;
     private final IntPredicate universityCountPredicate;
