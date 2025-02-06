@@ -4,6 +4,7 @@ import com.dongbaeb.demo.global.exception.BadRequestException;
 import com.dongbaeb.demo.member.domain.Role;
 import java.util.Arrays;
 import java.util.EnumSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.IntPredicate;
 
@@ -24,7 +25,7 @@ public enum NotificationCategory {
 
     public static NotificationCategory from(String category) {
         return Arrays.stream(values())
-                .filter(notificationCategory -> category.equals(notificationCategory.category))
+                .filter(notificationCategory -> Objects.equals(category, notificationCategory.category))
                 .findAny()
                 .orElseThrow(() -> new BadRequestException("존재하지 않는 공지 카테고리입니다."));
     }
