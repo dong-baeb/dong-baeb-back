@@ -60,7 +60,7 @@ public class NotificationService {
     }
 
     private void validateStartDate(Notification notification) {
-        if (!notification.isNotificationFuture()) {
+        if (notification.isNotificationPast()) {
             throw new BadRequestException("과거 날짜에 대한 공지는 작성할 수 없습니다.");
         }
     }
