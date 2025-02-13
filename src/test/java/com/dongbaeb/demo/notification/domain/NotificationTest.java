@@ -46,15 +46,14 @@ class NotificationTest {
     @ParameterizedTest
     @MethodSource("provideFutureDays")
     @DisplayName("미래 날짜에 대한 공지는 작성이 가능하다.")
-    void isNotificationFutureWithFutureTest(LocalDate start) {
+    void isNotificationFutureWithPastTest(LocalDate start) {
         // given
         LocalDate end = start.plusDays(1);
         Member member = createMember(Role.MISSIONARY);
         Notification notification = createNotification(NotificationCategory.EAST_SEOUL, member, start, end);
-        ;
 
         // when & then
-        assertThat(notification.isNotificationFuture()).isTrue();
+        assertThat(notification.isNotificationPast()).isFalse();
     }
 
     private static List<LocalDate> provideFutureDays() {
@@ -66,7 +65,7 @@ class NotificationTest {
 
     @Test
     @DisplayName("과거 날짜에 대한 공지는 작성이 불가능하다.")
-    void isNotificationFutureWithPastTest() {
+    void isNotificationPastWithPastTest() {
         // given
         LocalDate start = LocalDate.now().minusDays(1);
         LocalDate end = start.plusDays(1);
@@ -74,7 +73,7 @@ class NotificationTest {
         Notification notification = createNotification(NotificationCategory.EAST_SEOUL, member, start, end);
 
         // when & then
-        assertThat(notification.isNotificationFuture()).isFalse();
+        assertThat(notification.isNotificationPast()).isTrue();
     }
 
     @Test
