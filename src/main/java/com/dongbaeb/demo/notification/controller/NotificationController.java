@@ -51,7 +51,7 @@ public class NotificationController {
             @Valid @RequestBody NotificationRequest request,
             MemberAuth memberAuth) {
         Long notificationId = notificationService.createNotification(request, memberAuth);
-        return ResponseEntity.created(URI.create("notifications/" + notificationId))
+        return ResponseEntity.created(URI.create("/notifications/" + notificationId))
                 .build();
     }
 }
