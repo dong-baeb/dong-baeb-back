@@ -16,13 +16,11 @@ public interface NotificationRepository extends JpaRepository<Notification,Long>
 
     @Query(value = "SELECT * " +
             "FROM notification " +
-            "WHERE is_whole = true " +
+            "WHERE notification_category = 'EAST_SEOUL' " +
             "ORDER BY id ASC " +
             "LIMIT :limit " +
             "OFFSET :offset",
             nativeQuery = true)
 
     ArrayList<Notification> findPagedWholeEntities(@Param("limit") int limit, @Param("offset") int offset);
-
-    ArrayList<Notification> findByUniversity(University name);
 }

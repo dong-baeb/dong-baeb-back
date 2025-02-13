@@ -9,7 +9,11 @@ import com.dongbaeb.demo.member.domain.University;
 import com.dongbaeb.demo.member.repository.MemberRepository;
 import com.dongbaeb.demo.member.repository.MemberUniversityRepository;
 import com.dongbaeb.demo.notification.domain.Notification;
+import com.dongbaeb.demo.notification.domain.NotificationPhoto;
+import com.dongbaeb.demo.notification.domain.NotificationUniversity;
+import com.dongbaeb.demo.notification.repository.NotificationPhotoRepository;
 import com.dongbaeb.demo.notification.repository.NotificationRepository;
+import com.dongbaeb.demo.notification.repository.NotificationUniversityRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.query.Page;
@@ -19,9 +23,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
@@ -29,22 +31,59 @@ import java.util.Optional;
 public class NotificationService {
 
     private final NotificationRepository notificationRepository;
-
     private final MemberRepository memberRepository;
 
     private final MemberUniversityRepository memberUniversityRepository;
+    private final NotificationPhotoRepository notificationPhotoRepository;
+
+    private final NotificationUniversityRepository notificationUniversityRepository;
 
     public ResponseEntity<?> getAllCouncilsNotification(int page) {
+        ArrayList<Map<String,Object>> datas = new ArrayList<>();
+
         int pageSize = 15;
         int offset = (page - 1) * pageSize;
         ArrayList<Notification> notifications = notificationRepository.findPagedWholeEntities(pageSize,offset);
-        return new ResponseEntity<>(notifications, HttpStatusCode.valueOf(200));
+
+        for(int i=0;i<notifications.size();i++) {
+            Map<String,Object> data = new HashMap<>();
+            Notification thisNotification = notifications.get(i);
+            data.put("notification",thisNotification);
+            data.put("photos",getPhotoUrls(thisNotification));
+            datas.add(data);
+        }
+
+        return new ResponseEntity<>(datas, HttpStatusCode.valueOf(200));
     }
 
     public ResponseEntity<?> getByUniversityName(University name,MemberAuth memberAuth) {
-        validateUniversity(memberAuth.memberId(),name);
-        ArrayList<Notification> notifications = notificationRepository.findByUniversity(name);
-        return new ResponseEntity<>(notifications,HttpStatusCode.valueOf(200));
+
+//        validateUniversity(memberAuth.memberId(),name);
+
+        ArrayList<Map<String,Object>> datas = new ArrayList<>();
+
+        ArrayList<NotificationUniversity> notifications = notificationUniversityRepository.findByUniversity(name);
+
+        for(int i=0;i<notifications.size();i++) {
+            Map<String,Object> data = new HashMap<>();
+            Notification thisNotification = notifications.get(i).getNotification();
+            data.put("notification",thisNotification);
+            data.put("photos",getPhotoUrls(thisNotification));
+            datas.add(data);
+        }
+
+        return new ResponseEntity<>(datas,HttpStatusCode.valueOf(200));
+    }
+
+    private ArrayList<String> getPhotoUrls(Notification notification) {
+        ArrayList<String> result = new ArrayList<>();
+        ArrayList<NotificationPhoto> notificationPhotos = notificationPhotoRepository.findByNotification(notification);
+
+        for(int i=0; i<notificationPhotos.size(); i++) {
+            result.add(notificationPhotos.get(i).getImageUrl());
+        }
+
+        return result;
     }
 
     private void validateUniversity(Long memberId, University name) {

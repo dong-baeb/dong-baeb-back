@@ -1,9 +1,18 @@
 package com.dongbaeb.demo.notification.domain;
 
 import com.dongbaeb.demo.global.entity.BaseEntity;
+import com.dongbaeb.demo.global.exception.BadRequestException;
 import com.dongbaeb.demo.member.domain.Member;
-import com.dongbaeb.demo.member.domain.University;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import java.time.LocalDate;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,36 +23,61 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
 public class Notification extends BaseEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "title",nullable = false)
-    private String title;
-
-    @Column(name = "content",nullable = false)
-    private String content;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private NotificationCategory notificationCategory;
 
     @ManyToOne
-    @JoinColumn(name = "member_id",nullable = false)
-    private Member member;
+    @JoinColumn(name = "author_id", nullable = false)
+    private Member author;
 
-    @Column(name = "university")
-    @Enumerated(EnumType.STRING)
-    private University university;
+    @Column(nullable = false)
+    private String title;
 
-    //전체 공지인지 여부 (대학교와 합칠 수 있지 않을까?)
-    @Column(name = "is_whole",nullable = false)
-    private Boolean isWhole;
+    @Column(nullable = false)
+    private String content;
 
-    //사진 url??
+    @Column(nullable = false)
+    private LocalDate startDate;
 
-    public Notification(String title, String content,Member member,University university,Boolean isWhole) {
+    @Column(nullable = false)
+    private LocalDate endDate;
+
+    public Notification(NotificationCategory category, Member author, String title, String content, LocalDate start,
+                        LocalDate end) {
+        validateDate(start, end);
+        this.notificationCategory = category;
+        this.author = author;
         this.title = title;
         this.content = content;
-        this.member = member;
-        this.university = university;
-        this.isWhole = isWhole;
+        this.startDate = start;
+        this.endDate = end;
+    }
+
+    public Notification(String category, Member author, String title, String content, LocalDate start, LocalDate end) {
+        this(NotificationCategory.from(category), author, title, content, start, end);
+    }
+
+    private void validateDate(LocalDate startDate, LocalDate endDate) {
+        if (startDate.isAfter(endDate)) {
+            throw new BadRequestException("공지의 끝 날짜는 시작 날짜를 앞설 수 없습니다.");
+        }
+    }
+
+    public boolean isNotificationFuture() {
+        LocalDate now = LocalDate.now();
+        return startDate.isEqual(now) || startDate.isAfter(now);
+    }
+
+    public boolean isRoleAllowed() {
+        return notificationCategory.isRoleAllowed(author.getRole());
+    }
+
+    public boolean isValidUniversityCount(int universityCount) {
+        return notificationCategory.isValidUniversityCount(universityCount);
     }
 }
