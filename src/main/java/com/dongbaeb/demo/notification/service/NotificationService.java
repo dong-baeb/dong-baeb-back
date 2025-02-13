@@ -72,17 +72,18 @@ public class NotificationService {
     }
 
     private void validateAuthorization(Notification notification, Member author, List<University> universities) {
-        if (!hasPermissionToCreate(notification, author, universities)) {
+        if (!notification.isRoleAllowed() || isLeaderNotBelongToUniversity(author, universities)) {
             throw new ForbiddenException("공지를 작성할 권한이 없습니다.");
         }
     }
 
-    private boolean hasPermissionToCreate(Notification notification, Member author, List<University> universities) {
-        return notification.isRoleAllowed() || isLeaderOfAnyUniversity(author, universities);
+    private boolean isLeaderNotBelongToUniversity(Member author, List<University> universities) {
+        return author.isLeader() && !isAuthorBelongToAllUniversities(author, universities);
     }
 
-    private boolean isLeaderOfAnyUniversity(Member author, List<University> universities) {
-        return author.isLeader() && memberUniversityRepository.existsAllByMemberAndUniversityIn(author, universities);
+    private boolean isAuthorBelongToAllUniversities(Member author, List<University> universities) {
+        return universities.stream()
+                .allMatch(university -> memberUniversityRepository.existsByMemberAndUniversity(author, university));
     }
 
     private void createNotificationPhotos(Notification notification, NotificationRequest request) {
