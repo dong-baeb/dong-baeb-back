@@ -1,9 +1,7 @@
-package com.dongbaeb.demo.member.domain;
+package com.dongbaeb.demo.notification.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -16,21 +14,20 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class MemberUniversity {
+public class NotificationPhoto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "member_id", nullable = false)
-    private Member member;
+    @JoinColumn(name = "notification_id", nullable = false)
+    private Notification notification;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private University university;
+    private String imageUrl;
 
-    public MemberUniversity(Member member, University university) {
-        this.member = member;
-        this.university = university;
+    public NotificationPhoto(Notification notification, String imageUrl) {
+        this.notification = notification;
+        this.imageUrl = imageUrl;
     }
 }
