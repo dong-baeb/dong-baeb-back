@@ -8,7 +8,7 @@ spring:
 application:
   name: DongBaeb
 jwt:
-  access-expiration: 1800000
+  access-expiration: 180000
 ---
 # dev
 spring:
