@@ -1,12 +1,14 @@
 package com.dongbaeb.demo.member.controller;
 
 import com.dongbaeb.demo.global.dto.MemberAuth;
+import com.dongbaeb.demo.global.exception.dto.ExceptionResponse;
 import com.dongbaeb.demo.member.dto.MemberRequest;
 import com.dongbaeb.demo.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,14 +27,29 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberController {
     private final MemberService memberService;
 
+    @Operation(
+            summary = "멤버 정보 수정",
+            description = "멤버의 정보를 수정한다."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "멤버 정보 수정 성공"
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "유효하지 않은 액세스 토큰으로 인한 멤버 정보 수정 실패",
+                    content = @Content(schema = @Schema(implementation = ExceptionResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "다른 사용자의 정보 수정으로 인한 수정 실패",
+                    content = @Content(schema = @Schema(implementation = ExceptionResponse.class))
+            )
+    })
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateMember(
-            @Parameter(description = "수정할 Member의 Id 번호")
             @PathVariable(name = "id") Long id,
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "수정 요청 Request Body",
-                    content = @Content(schema = @Schema(implementation = MemberRequest.class))
-            )
             @Valid @RequestBody MemberRequest memberRequest,
             MemberAuth memberAuth
     ) {
@@ -41,13 +58,28 @@ public class MemberController {
                 .build();
     }
 
-    @Operation(summary = "Member의 프로필을 삭제한다.", description = "{id}에 해당하는 번호의 Member의 프로필을 삭제한다.")
+    @Operation(
+            summary = "멤버 정보 삭제",
+            description = "멤버의 정보를 삭제한다."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "멤버 정보 삭제 성공"
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "유효하지 않은 액세스 토큰으로 인한 멤버 정보 삭제 실패",
+                    content = @Content(schema = @Schema(implementation = ExceptionResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "다른 사용자의 정보 삭제로 인한 삭제 실패",
+                    content = @Content(schema = @Schema(implementation = ExceptionResponse.class))
+            )
+    })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteMember(
-            @Parameter(description = "삭제할 Member의 Id번호")
-            @PathVariable(name = "id") Long id,
-            MemberAuth memberAuth
-    ) {
+    public ResponseEntity<Void> deleteMember(@PathVariable(name = "id") Long id, MemberAuth memberAuth) {
         memberService.deleteMember(id, memberAuth);
         return ResponseEntity.noContent()
                 .build();
