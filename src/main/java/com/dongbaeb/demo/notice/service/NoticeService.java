@@ -1,8 +1,8 @@
 package com.dongbaeb.demo.notice.service;
 
 import com.dongbaeb.demo.global.dto.MemberAuth;
-import com.dongbaeb.demo.global.exception.BadRequestException;
 import com.dongbaeb.demo.global.exception.ForbiddenException;
+import com.dongbaeb.demo.global.exception.ResourceNotFoundException;
 import com.dongbaeb.demo.notice.domain.Notice;
 import com.dongbaeb.demo.notice.domain.NoticePhoto;
 import com.dongbaeb.demo.notice.domain.NoticeUniversity;
@@ -44,7 +44,7 @@ public class NoticeService {
 
     private Notice findNoticeById(Long id) {
         return noticeRepository.findById(id)
-                .orElseThrow(() -> new BadRequestException("해당 id를 가진 공지를 찾을 수 없습니다." + id));
+                .orElseThrow(() -> new ResourceNotFoundException("해당 id를 가진 공지를 찾을 수 없습니다." + id));
     }
 
     private void validateAuthorization(Notice notice, MemberAuth memberAuth) {

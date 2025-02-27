@@ -69,7 +69,7 @@ public class NoticeController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteNotice(
             @PathVariable("id") Long id,
-            MemberAuth memberAuth) {
+            @RequestBody MemberAuth memberAuth) {
         noticeService.deleteNotice(id, memberAuth);
         return ResponseEntity.noContent()
                 .build();
