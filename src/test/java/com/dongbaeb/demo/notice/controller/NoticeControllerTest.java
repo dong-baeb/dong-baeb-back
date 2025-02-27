@@ -56,7 +56,7 @@ class NoticeControllerTest {
         Member author = saveMember();
         Notice notice = saveNotice(author);
         List<NoticePhoto> photos = savePhotos(notice);
-        List<NoticeUniversity> universities = saveUniversities(notice);
+        List<NoticeUniversity> universities = saveNoticeUniversities(notice);
         NoticeResponse expectedResponse = NoticeResponse.from(notice, photos, universities);
 
         // when
@@ -79,7 +79,7 @@ class NoticeControllerTest {
 
     private Notice saveNotice(Member author) {
         Notice notice = new Notice("동서울", author, "동서울 연합 수련회", "동서울 연합 수련회를 진행합니다!",
-                LocalDate.parse("2025-12-31"), LocalDate.parse("2025-12-31"));
+                LocalDate.now(), LocalDate.now());
         return noticeRepository.save(notice);
     }
 
@@ -89,7 +89,7 @@ class NoticeControllerTest {
         return noticePhotoRepository.saveAll(List.of(photo1, photo2));
     }
 
-    private List<NoticeUniversity> saveUniversities(Notice notice) {
+    private List<NoticeUniversity> saveNoticeUniversities(Notice notice) {
         NoticeUniversity university1 = new NoticeUniversity(notice, University.KWANGWOON);
         NoticeUniversity university2 = new NoticeUniversity(notice, University.KONKUK);
         return noticeUniversityRepository.saveAll(List.of(university1, university2));
