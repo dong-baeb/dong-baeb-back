@@ -3,7 +3,14 @@ package com.dongbaeb.demo.notice.service;
 import com.dongbaeb.demo.global.dto.MemberAuth;
 import com.dongbaeb.demo.global.exception.ForbiddenException;
 import com.dongbaeb.demo.global.exception.ResourceNotFoundException;
+import com.dongbaeb.demo.member.domain.Member;
+import com.dongbaeb.demo.member.domain.MemberUniversity;
+import com.dongbaeb.demo.member.domain.Role;
+import com.dongbaeb.demo.member.domain.University;
+import com.dongbaeb.demo.member.repository.MemberRepository;
+import com.dongbaeb.demo.member.repository.MemberUniversityRepository;
 import com.dongbaeb.demo.notice.domain.Notice;
+import com.dongbaeb.demo.notice.domain.NoticeCategory;
 import com.dongbaeb.demo.notice.domain.NoticePhoto;
 import com.dongbaeb.demo.notice.domain.NoticeUniversity;
 import com.dongbaeb.demo.notice.dto.NoticeResponse;
@@ -19,27 +26,36 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class NoticeService {
+    private final MemberRepository memberRepository;
+    private final MemberUniversityRepository memberUniversityRepository;
     private final NoticeRepository noticeRepository;
     private final NoticePhotoRepository noticePhotoRepository;
     private final NoticeUniversityRepository noticeUniversityRepository;
 
     @Transactional(readOnly = true)
-    public NoticeResponse readNotice(Long id) {
+    public NoticeResponse readNotice(Long id, MemberAuth memberAuth) {
+        Member member = findMemberById(memberAuth.memberId());
         Notice notice = findNoticeById(id);
         List<NoticePhoto> photos = noticePhotoRepository.findByNoticeId(id);
-        List<NoticeUniversity> universities = noticeUniversityRepository.findByNoticeId(id);
+        List<NoticeUniversity> noticeUniversities = noticeUniversityRepository.findByNoticeId(id);
+        validateReadAuthorization(member, notice, noticeUniversities);
 
-        return NoticeResponse.from(notice, photos, universities);
+        return NoticeResponse.from(notice, photos, noticeUniversities);
     }
 
     @Transactional
     public void deleteNotice(Long id, MemberAuth memberAuth) {
+        Member member = findMemberById(memberAuth.memberId());
         Notice notice = findNoticeById(id);
-        validateAuthorization(notice, memberAuth);
-
+        validateDeleteAuthorization(notice, member);
         noticeUniversityRepository.deleteByNotice(notice);
         noticePhotoRepository.deleteByNotice(notice);
         noticeRepository.delete(notice);
+    }
+
+    private Member findMemberById(Long id) {
+        return memberRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("해당 id를 가진 멤버를 찾을 수 없습니다." + id));
     }
 
     private Notice findNoticeById(Long id) {
@@ -47,9 +63,40 @@ public class NoticeService {
                 .orElseThrow(() -> new ResourceNotFoundException("해당 id를 가진 공지를 찾을 수 없습니다." + id));
     }
 
-    private void validateAuthorization(Notice notice, MemberAuth memberAuth) {
-        if (!notice.getAuthor().getId().equals(memberAuth.memberId())) { // 관리자 권한 추가?
+    private List<University> findMemberUniversitiesByMember(Member member) {
+        return memberUniversityRepository.findByMember(member)
+                .stream()
+                .map(MemberUniversity::getUniversity)
+                .toList();
+    }
+
+    private void validateReadAuthorization(Member member, Notice notice, List<NoticeUniversity> noticeUniversities) {
+        if (!isMissionary(member) && !isAuthorizedNoticeUniversity(member, notice, noticeUniversities)) {
+            throw new ForbiddenException("공지 조회 권한이 없습니다.");
+        }
+    }
+
+    private void validateDeleteAuthorization(Notice notice, Member member) {
+        if (!notice.getAuthor().getId().equals(member.getId()) && !isMissionary(member)) {
             throw new ForbiddenException("공지 삭제 권한이 없습니다.");
         }
+    }
+
+    private boolean isMissionary(Member member) {
+        return member.getRole() == Role.MISSIONARY;
+    }
+
+    private boolean isAuthorizedNoticeUniversity(Member member, Notice notice, List<NoticeUniversity> noticeUniversities) {
+        return isEastSeoulCategoryNotice(notice) || isMemberBelongToUniversity(member, noticeUniversities);
+    }
+
+    private boolean isEastSeoulCategoryNotice(Notice notice) {
+        return notice.getNoticeCategory() == NoticeCategory.EAST_SEOUL;
+    }
+
+    private boolean isMemberBelongToUniversity(Member member, List<NoticeUniversity> noticeUniversities) {
+        List<University> memberUniversities = findMemberUniversitiesByMember(member);
+        return noticeUniversities.stream()
+                .anyMatch(university -> memberUniversities.contains(university.getUniversity()));
     }
 }

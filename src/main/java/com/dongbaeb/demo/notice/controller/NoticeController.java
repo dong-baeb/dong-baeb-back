@@ -36,8 +36,10 @@ public class NoticeController {
             )
     })
     @GetMapping("/{id}")
-    public ResponseEntity<?> readNotice(@PathVariable("id") Long id) {
-        NoticeResponse response = noticeService.readNotice(id);
+    public ResponseEntity<?> readNotice(
+            @PathVariable("id") Long id,
+            MemberAuth memberAuth) {
+        NoticeResponse response = noticeService.readNotice(id, memberAuth);
         return ResponseEntity.ok(response);
     }
 
@@ -69,7 +71,7 @@ public class NoticeController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteNotice(
             @PathVariable("id") Long id,
-            @RequestBody MemberAuth memberAuth) {
+            MemberAuth memberAuth) {
         noticeService.deleteNotice(id, memberAuth);
         return ResponseEntity.noContent()
                 .build();
