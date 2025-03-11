@@ -110,6 +110,23 @@ class NoticeServiceTest {
     }
 
     @Test
+    @DisplayName("리더는 자신이 소속된 학교의 공지를 정상적으로 삭제할 수 있다.")
+    void deleteNoticeWithLeaderBelongToUniversityTest() {
+        // given
+        Member author = saveMember("리더");
+        Notice notice = saveTestNotice(author);
+        Member leader = new Member(2L, "리더", "동백2", "동백2", "url", "2025");
+        memberRepository.save(leader);
+        saveMemberUniversity(leader, University.KONKUK);
+
+        // when
+        noticeService.deleteNotice(notice.getId(), new MemberAuth(leader.getId()));
+
+        // then
+        assertThat(noticeRepository.existsById(notice.getId())).isFalse();
+    }
+
+    @Test
     @DisplayName("리더가 자신이 소속되지 않는 학교의 공지를 삭제하려는 경우 예외가 발생한다.")
     void deleteNoticeWithLeaderNotBelongToUniversityExceptionTest() {
         // given
