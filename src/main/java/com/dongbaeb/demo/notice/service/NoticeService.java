@@ -5,12 +5,10 @@ import com.dongbaeb.demo.global.exception.ForbiddenException;
 import com.dongbaeb.demo.global.exception.ResourceNotFoundException;
 import com.dongbaeb.demo.member.domain.Member;
 import com.dongbaeb.demo.member.domain.MemberUniversity;
-import com.dongbaeb.demo.member.domain.Role;
 import com.dongbaeb.demo.member.domain.University;
 import com.dongbaeb.demo.member.repository.MemberRepository;
 import com.dongbaeb.demo.member.repository.MemberUniversityRepository;
 import com.dongbaeb.demo.notice.domain.Notice;
-import com.dongbaeb.demo.notice.domain.NoticeCategory;
 import com.dongbaeb.demo.notice.domain.NoticePhoto;
 import com.dongbaeb.demo.notice.domain.NoticeUniversity;
 import com.dongbaeb.demo.notice.dto.NoticeResponse;
@@ -47,7 +45,8 @@ public class NoticeService {
     public void deleteNotice(Long id, MemberAuth memberAuth) {
         Member member = findMemberById(memberAuth.memberId());
         Notice notice = findNoticeById(id);
-        validateDeleteAuthorization(notice, member);
+        List<NoticeUniversity> noticeUniversities = noticeUniversityRepository.findByNoticeId(id);
+        validateDeleteAuthorization(member, notice, noticeUniversities);
         noticeUniversityRepository.deleteByNotice(notice);
         noticePhotoRepository.deleteByNotice(notice);
         noticeRepository.delete(notice);
@@ -71,27 +70,27 @@ public class NoticeService {
     }
 
     private void validateReadAuthorization(Member member, Notice notice, List<NoticeUniversity> noticeUniversities) {
-        if (!isMissionary(member) && !isAuthorizedNoticeUniversity(member, notice, noticeUniversities)) {
+        if (!member.isRole("간사") && !isAuthorizedNoticeUniversity(member, notice, noticeUniversities)) {
             throw new ForbiddenException("공지 조회 권한이 없습니다.");
         }
     }
 
-    private void validateDeleteAuthorization(Notice notice, Member member) {
-        if (!notice.getAuthor().getId().equals(member.getId()) && !isMissionary(member)) {
-            throw new ForbiddenException("공지 삭제 권한이 없습니다.");
+    private void validateDeleteAuthorization(Member member, Notice notice, List<NoticeUniversity> noticeUniversities) {
+        if (member.isRole("간사")) {
+            return;
         }
-    }
+        if (member.isRole("리더") && isMemberBelongToUniversity(member, noticeUniversities)) {
+            return;
+        }
+        if (notice.getAuthor().getId().equals(member.getId())) {
+            return;
+        }
 
-    private boolean isMissionary(Member member) {
-        return member.getRole() == Role.MISSIONARY;
+        throw new ForbiddenException("공지 삭제 권한이 없습니다.");
     }
 
     private boolean isAuthorizedNoticeUniversity(Member member, Notice notice, List<NoticeUniversity> noticeUniversities) {
-        return isEastSeoulCategoryNotice(notice) || isMemberBelongToUniversity(member, noticeUniversities);
-    }
-
-    private boolean isEastSeoulCategoryNotice(Notice notice) {
-        return notice.getNoticeCategory() == NoticeCategory.EAST_SEOUL;
+        return notice.isEastSeoulCategory() || isMemberBelongToUniversity(member, noticeUniversities);
     }
 
     private boolean isMemberBelongToUniversity(Member member, List<NoticeUniversity> noticeUniversities) {

@@ -74,4 +74,8 @@ public class Notice extends BaseEntity {
     public boolean isStartDateBefore(LocalDate localDate) {
         return startDate.isBefore(localDate);
     }
+
+    public boolean isEastSeoulCategory() {
+        return noticeCategory.equals(NoticeCategory.EAST_SEOUL);
+    }
 }
