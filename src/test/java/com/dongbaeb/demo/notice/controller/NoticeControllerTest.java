@@ -56,8 +56,8 @@ class NoticeControllerTest {
         Member author = saveMember();
         Notice notice = saveNotice(author);
         List<NoticePhoto> photos = savePhotos(notice);
-        List<NoticeUniversity> universities = saveNoticeUniversities(notice);
-        NoticeResponse expectedResponse = NoticeResponse.from(notice, photos, universities);
+        List<NoticeUniversity> noticeUniversities = saveNoticeUniversities(notice);
+        NoticeResponse expectedResponse = NoticeResponse.from(notice, photos, noticeUniversities);
 
         // when
         NoticeResponse actualResponse = RestAssured.given().log().all()
@@ -70,6 +70,28 @@ class NoticeControllerTest {
 
         //then
         assertThat(actualResponse).isEqualTo(expectedResponse);
+    }
+
+    @Test
+    @DisplayName("공지를 정상적으로 삭제한다.")
+    void deleteNoticeTest() {
+        // given
+        Member author = saveMember();
+        Notice notice = saveNotice(author);
+        savePhotos(notice);
+        saveNoticeUniversities(notice);
+
+        // when
+        RestAssured.given().log().all()
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + createToken(author))
+                .when().delete("/notices/" + notice.getId())
+                .then().log().all()
+                .statusCode(204);
+
+        // then
+        assertThat(noticeRepository.existsById(notice.getId())).isFalse();
+        assertThat(noticePhotoRepository.findByNoticeId(notice.getId())).isEmpty();
+        assertThat(noticeUniversityRepository.findByNoticeId(notice.getId())).isEmpty();
     }
 
     private Member saveMember() {
