@@ -19,6 +19,8 @@ import com.dongbaeb.demo.notice.repository.NoticeRepository;
 import com.dongbaeb.demo.notice.repository.NoticeUniversityRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
@@ -60,13 +62,37 @@ class NoticeServiceTest {
         assertThat(response.id()).isEqualTo(notice.getId());
     }
 
-    @Test
+    @ParameterizedTest
+    @ValueSource(strings = {"멤버", "리더", "간사"})
+    @DisplayName("누구나 동서울 카테고리 공지를 조회할 수 있다.")
+    void readNoticeEastSeoulCategoryTest(String role) {
+        // given
+        Member author = saveMember("간사");
+        Notice notice = new Notice("동서울", author, "제목", "내용", LocalDate.now(), LocalDate.now());
+        noticeRepository.save(notice);
+        List<String> noticeImageUrls = savePhotos(notice).stream()
+                .map(NoticePhoto::getImageUrl)
+                .toList();
+        Member member = new Member(2L, role, "동백2", "동백2", "url", "2025");
+        memberRepository.save(member);
+
+        // when
+        NoticeResponse response = noticeService.readNotice(notice.getId(), new MemberAuth(member.getId()));
+
+        // then
+        assertThat(response).isNotNull();
+        assertThat(response.id()).isEqualTo(notice.getId());
+        assertThat(response.imageUrls()).containsExactlyElementsOf(noticeImageUrls);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"멤버", "리더"})
     @DisplayName("다른 학교의 공지 조회 시 예외가 발생한다.")
-    void readNoticeValidateUniversityExceptionTest() {
+    void readNoticeValidateUniversityExceptionTest(String role) {
         // given
         Member author = saveMember("리더");
         Notice notice = saveTestNotice(author);
-        Member member = new Member(2L, "멤버", "동백2", "동백2", "url", "2025");
+        Member member = new Member(2L, role, "동백2", "동백2", "url", "2025");
         memberRepository.save(member);
         saveMemberUniversity(member, University.SIRIB);
 
@@ -94,69 +120,35 @@ class NoticeServiceTest {
         assertThat(response.id()).isEqualTo(notice.getId());
     }
 
-    @Test
-    @DisplayName("멤버가 공지를 삭제하려는 경우 예외가 발생한다.")
-    void deleteNoticeUnValidateMemberExceptionTest() {
+    @ParameterizedTest
+    @ValueSource(strings = {"멤버", "리더", "간사"})
+    @DisplayName("작성자는 공지를 정상적으로 삭제할 수 있다.")
+    void deleteNoticeTest(String role) {
+        // given
+        Member author = saveMember(role);
+        Notice notice = saveTestNotice(author);
+
+        // when
+        noticeService.deleteNotice(notice.getId(), new MemberAuth(author.getId()));
+
+        // then
+        assertThat(noticeRepository.existsById(notice.getId())).isFalse();
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"멤버", "리더", "간사"})
+    @DisplayName("작성자 외의 공지를 삭제하려는 경우 예외가 발생한다.")
+    void deleteNoticeExceptionTest(String role) {
         // given
         Member author = saveMember("리더");
         Notice notice = saveTestNotice(author);
-        Member member = new Member(2L, "멤버", "동백2", "동백2", "url", "2025");
+        Member member = new Member(2L, role, "동백2", "동백2", "url", "2025");
         memberRepository.save(member);
 
         // when & then
         assertThatThrownBy(() -> noticeService.deleteNotice(notice.getId(), new MemberAuth(member.getId())))
                 .isInstanceOf(ForbiddenException.class)
                 .hasMessage("공지 삭제 권한이 없습니다.");
-    }
-
-    @Test
-    @DisplayName("리더는 자신이 소속된 학교의 공지를 정상적으로 삭제할 수 있다.")
-    void deleteNoticeWithLeaderBelongToUniversityTest() {
-        // given
-        Member author = saveMember("리더");
-        Notice notice = saveTestNotice(author);
-        Member leader = new Member(2L, "리더", "동백2", "동백2", "url", "2025");
-        memberRepository.save(leader);
-        saveMemberUniversity(leader, University.KONKUK);
-
-        // when
-        noticeService.deleteNotice(notice.getId(), new MemberAuth(leader.getId()));
-
-        // then
-        assertThat(noticeRepository.existsById(notice.getId())).isFalse();
-    }
-
-    @Test
-    @DisplayName("리더가 자신이 소속되지 않는 학교의 공지를 삭제하려는 경우 예외가 발생한다.")
-    void deleteNoticeWithLeaderNotBelongToUniversityExceptionTest() {
-        // given
-        Member author = saveMember("리더");
-        Notice notice = saveTestNotice(author);
-        Member leader = new Member(2L, "리더", "동백2", "동백2", "url", "2025");
-        memberRepository.save(leader);
-        saveMemberUniversity(leader, University.SIRIB);
-
-        // when & then
-        assertThatThrownBy(() -> noticeService.deleteNotice(notice.getId(), new MemberAuth(leader.getId())))
-                .isInstanceOf(ForbiddenException.class)
-                .hasMessage("공지 삭제 권한이 없습니다.");
-    }
-
-    @Test
-    @DisplayName("간사는 자신이 소속되지 않는 학교의 공지를 삭제할 수 있다.")
-    void deleteNoticeWithMissionaryNotBelongToUniversityTest() {
-        // given
-        Member author = saveMember("리더");
-        Notice notice = saveTestNotice(author);
-        Member missionary= new Member(2L, "간사", "동백2", "동백2", "url", "2025");
-        memberRepository.save(missionary);
-        saveMemberUniversity(missionary, University.SIRIB);
-
-        // when
-        noticeService.deleteNotice(notice.getId(), new MemberAuth(missionary.getId()));
-
-        // then
-        assertThat(noticeRepository.existsById(notice.getId())).isFalse();
     }
 
     private Member saveMember(String role) {
