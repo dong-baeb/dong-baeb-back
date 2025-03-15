@@ -45,8 +45,7 @@ public class NoticeService {
     public void deleteNotice(Long id, MemberAuth memberAuth) {
         Member member = findMemberById(memberAuth.memberId());
         Notice notice = findNoticeById(id);
-        List<NoticeUniversity> noticeUniversities = noticeUniversityRepository.findByNoticeId(id);
-        validateDeleteAuthorization(member, notice, noticeUniversities);
+        validateDeleteAuthorization(member, notice);
         noticeUniversityRepository.deleteByNotice(notice);
         noticePhotoRepository.deleteByNotice(notice);
         noticeRepository.delete(notice);
@@ -75,18 +74,10 @@ public class NoticeService {
         }
     }
 
-    private void validateDeleteAuthorization(Member member, Notice notice, List<NoticeUniversity> noticeUniversities) {
-        if (member.isRole("간사")) {
-            return;
+    private void validateDeleteAuthorization(Member member, Notice notice) {
+        if (!notice.getAuthor().getId().equals(member.getId())) {
+            throw new ForbiddenException("공지 삭제 권한이 없습니다.");
         }
-        if (member.isRole("리더") && isMemberBelongToUniversity(member, noticeUniversities)) {
-            return;
-        }
-        if (notice.getAuthor().getId().equals(member.getId())) {
-            return;
-        }
-
-        throw new ForbiddenException("공지 삭제 권한이 없습니다.");
     }
 
     private boolean isAuthorizedNoticeUniversity(Member member, Notice notice, List<NoticeUniversity> noticeUniversities) {
