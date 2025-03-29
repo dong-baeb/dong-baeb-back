@@ -7,6 +7,7 @@ import com.dongbaeb.demo.notice.dto.NoticeResponse;
 import com.dongbaeb.demo.notice.service.NotificationService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,14 +37,14 @@ public class NoticeController {
     @GetMapping("/")
     public ResponseEntity<List<NoticeResponse>> getNotices(@RequestParam("category") NoticeCategory noticeCategory,
                                                            @RequestParam("name") University name,
-                                                           @RequestParam("page") Integer page,
+                                                           Pageable pageable,
                                                            MemberAuth memberAuth) {
         List<NoticeResponse> notices;
 
         if (NoticeCategory.EAST_SEOUL.equals(noticeCategory)) {
-            notices = notificationService.getAllCouncilsNotification(page);
+            notices = notificationService.getAllCouncilsNotification(pageable);
         } else {
-            notices = notificationService.getByUniversityName(name, memberAuth);
+            notices = notificationService.getByUniversityName(name, pageable, memberAuth);
         }
 
         return ResponseEntity.ok(notices);

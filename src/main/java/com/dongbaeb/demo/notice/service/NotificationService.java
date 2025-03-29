@@ -9,6 +9,7 @@ import com.dongbaeb.demo.member.domain.University;
 import com.dongbaeb.demo.member.repository.MemberRepository;
 import com.dongbaeb.demo.member.repository.MemberUniversityRepository;
 import com.dongbaeb.demo.notice.domain.Notice;
+import com.dongbaeb.demo.notice.domain.NoticeCategory;
 import com.dongbaeb.demo.notice.domain.NoticePhoto;
 import com.dongbaeb.demo.notice.domain.NoticeUniversity;
 import com.dongbaeb.demo.notice.dto.NoticeResponse;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -35,12 +37,11 @@ public class NotificationService {
 
     private final NotificationUniversityRepository notificationUniversityRepository;
 
-    public List<NoticeResponse> getAllCouncilsNotification(int page) {
-        int pageSize = 15;
-        int offset = (page - 1) * pageSize;
-
+    public List<NoticeResponse> getAllCouncilsNotification(Pageable pageable) {
         List<NoticeResponse> noticeResponses = new ArrayList<>();
-        List<Notice> notices = notificationRepository.findPagedWholeEntities(pageSize, offset);
+        List<Notice> notices = notificationRepository.findByNoticeCategoryOrderByIdAsc(
+                NoticeCategory.EAST_SEOUL,
+                pageable).getContent();
 
         for (int i = 0; i < notices.size(); i++) {
             Notice notice = notices.get(i);
@@ -51,13 +52,14 @@ public class NotificationService {
         return noticeResponses;
     }
 
-    public List<NoticeResponse> getByUniversityName(University name, MemberAuth memberAuth) {
+    public List<NoticeResponse> getByUniversityName(University name, Pageable pageable, MemberAuth memberAuth) {
 
-//        validateUniversity(memberAuth.memberId(),name);
+        validateUniversity(memberAuth.memberId(), name);
 
         List<NoticeResponse> noticeResponses = new ArrayList<>();
 
-        List<NoticeUniversity> noticeUniversities = notificationUniversityRepository.findByUniversity(name);
+        List<NoticeUniversity> noticeUniversities = notificationUniversityRepository.findByUniversity(name, pageable)
+                .getContent();
 
         for (int i = 0; i < noticeUniversities.size(); i++) {
             Notice notice = noticeUniversities.get(i).getNotice();
