@@ -1,12 +1,11 @@
 package com.dongbaeb.demo.notification.repository;
 
-import com.dongbaeb.demo.notification.domain.Notification;
-import com.dongbaeb.demo.notification.domain.NotificationPhoto;
+import com.dongbaeb.demo.notification.domain.Notice;
+import com.dongbaeb.demo.notification.domain.NoticePhoto;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.ArrayList;
+public interface NotificationPhotoRepository extends JpaRepository<NoticePhoto, Long> {
 
-public interface NotificationPhotoRepository extends JpaRepository<NotificationPhoto,Long> {
-
-    ArrayList<NotificationPhoto> findByNotification(Notification notification);
+    List<NoticePhoto> findByNotice(Notice notice);
 }

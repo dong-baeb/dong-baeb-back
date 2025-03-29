@@ -8,7 +8,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.IntPredicate;
 
-public enum NotificationCategory {
+public enum NoticeCategory {
     EAST_SEOUL("동서울", count -> count == 0, Set.of(Role.MISSIONARY)),
     UNIVERSITY("학교", count -> count >= 1, Set.of(Role.MISSIONARY, Role.LEADER));
 
@@ -17,15 +17,15 @@ public enum NotificationCategory {
     private final Set<Role> allowedRoles;
 
 
-    NotificationCategory(String category, IntPredicate universityCountPredicate, Set<Role> availableRoles) {
+    NoticeCategory(String category, IntPredicate universityCountPredicate, Set<Role> availableRoles) {
         this.category = category;
         this.universityCountPredicate = universityCountPredicate;
         this.allowedRoles = EnumSet.copyOf(availableRoles);
     }
 
-    public static NotificationCategory from(String category) {
+    public static NoticeCategory from(String category) {
         return Arrays.stream(values())
-                .filter(notificationCategory -> Objects.equals(category, notificationCategory.category))
+                .filter(noticeCategory -> Objects.equals(category, noticeCategory.category))
                 .findAny()
                 .orElseThrow(() -> new BadRequestException("존재하지 않는 공지 카테고리입니다."));
     }

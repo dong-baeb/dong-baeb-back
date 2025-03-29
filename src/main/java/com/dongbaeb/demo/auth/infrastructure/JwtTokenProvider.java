@@ -61,6 +61,5 @@ public class JwtTokenProvider {
                 .parseSignedClaims(jwtToken)
                 .getPayload()
                 .get(MEMBER_ID_KEY, String.class);
-
     }
 }
