@@ -4,7 +4,6 @@ import com.dongbaeb.demo.global.dto.MemberAuth;
 import com.dongbaeb.demo.global.exception.ForbiddenException;
 import com.dongbaeb.demo.global.exception.ResourceNotFoundException;
 import com.dongbaeb.demo.member.domain.Member;
-import com.dongbaeb.demo.member.domain.MemberUniversity;
 import com.dongbaeb.demo.member.domain.University;
 import com.dongbaeb.demo.member.repository.MemberRepository;
 import com.dongbaeb.demo.member.repository.MemberUniversityRepository;
@@ -18,7 +17,6 @@ import com.dongbaeb.demo.notice.repository.NotificationRepository;
 import com.dongbaeb.demo.notice.repository.NotificationUniversityRepository;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -74,20 +72,12 @@ public class NotificationService {
     private void validateUniversity(Long memberId, University name) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new ResourceNotFoundException("해당 아이디를 가진 사용자를 찾을 수 없습니다: " + memberId));
-        List<MemberUniversity> memberUniversities = memberUniversityRepository.findByMember(member);
-        if (!isExistUniversity(memberUniversities, name)) {
+        if (!isExistUniversity(member, name)) {
             throw new ForbiddenException("다른 대학교의 공지에 접근할 수 없습니다.");
         }
     }
 
-    private boolean isExistUniversity(List<MemberUniversity> memberUniversities, University name) {
-        boolean isExist = false;
-        for (int i = 0; i < memberUniversities.size(); i++) {
-            if (Objects.equals(memberUniversities.get(i).getUniversity(), name)) {
-                isExist = true;
-                break;
-            }
-        }
-        return isExist;
+    private boolean isExistUniversity(Member member, University name) {
+        return memberUniversityRepository.existsByMemberAndUniversity(member, name);
     }
 }
