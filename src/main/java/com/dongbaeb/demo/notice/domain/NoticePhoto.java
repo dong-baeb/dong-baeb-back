@@ -1,4 +1,4 @@
-package com.dongbaeb.demo.notification.domain;
+package com.dongbaeb.demo.notice.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,20 +14,20 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class NotificationPhoto {
+public class NoticePhoto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "notification_id", nullable = false)
-    private Notification notification;
+    @JoinColumn(name = "notice_id", nullable = false)
+    private Notice notice;
 
     @Column(nullable = false)
     private String imageUrl;
 
-    public NotificationPhoto(Notification notification, String imageUrl) {
-        this.notification = notification;
+    public NoticePhoto(Notice notice, String imageUrl) {
+        this.notice = notice;
         this.imageUrl = imageUrl;
     }
 }

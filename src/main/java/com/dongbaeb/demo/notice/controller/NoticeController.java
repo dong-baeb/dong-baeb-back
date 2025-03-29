@@ -1,9 +1,9 @@
-package com.dongbaeb.demo.notification.controller;
+package com.dongbaeb.demo.notice.controller;
 
 import com.dongbaeb.demo.global.dto.MemberAuth;
 import com.dongbaeb.demo.global.exception.dto.ExceptionResponse;
-import com.dongbaeb.demo.notification.dto.NotificationRequest;
-import com.dongbaeb.demo.notification.service.NotificationService;
+import com.dongbaeb.demo.notice.dto.NoticeRequest;
+import com.dongbaeb.demo.notice.service.NoticeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -21,10 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "공지 관련 API", description = "공지를 조회, 작성, 수정, 삭제한다.")
 @RequiredArgsConstructor
-@RequestMapping("/notifications")
+@RequestMapping("/notices")
 @RestController
-public class NotificationController {
-    private final NotificationService notificationService;
+public class NoticeController {
+    private final NoticeService noticeService;
 
     @Operation(
             summary = "공지 작성",
@@ -47,11 +47,11 @@ public class NotificationController {
             )
     })
     @PostMapping
-    public ResponseEntity<Void> createNotification(
-            @Valid @RequestBody NotificationRequest request,
+    public ResponseEntity<Void> createNotice(
+            @Valid @RequestBody NoticeRequest request,
             MemberAuth memberAuth) {
-        Long notificationId = notificationService.createNotification(request, memberAuth);
-        return ResponseEntity.created(URI.create("/notifications/" + notificationId))
+        Long noticeId = noticeService.createNotice(request, memberAuth);
+        return ResponseEntity.created(URI.create("/notices/" + noticeId))
                 .build();
     }
 }

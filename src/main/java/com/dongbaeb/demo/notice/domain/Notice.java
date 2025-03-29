@@ -1,4 +1,4 @@
-package com.dongbaeb.demo.notification.domain;
+package com.dongbaeb.demo.notice.domain;
 
 import com.dongbaeb.demo.global.entity.BaseEntity;
 import com.dongbaeb.demo.global.exception.BadRequestException;
@@ -22,14 +22,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
-public class Notification extends BaseEntity {
+public class Notice extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private NotificationCategory notificationCategory;
+    private NoticeCategory noticeCategory;
 
     @ManyToOne
     @JoinColumn(name = "author_id", nullable = false)
@@ -47,10 +47,10 @@ public class Notification extends BaseEntity {
     @Column(nullable = false)
     private LocalDate endDate;
 
-    public Notification(NotificationCategory category, Member author, String title, String content, LocalDate start,
-                        LocalDate end) {
+    public Notice(NoticeCategory category, Member author, String title, String content, LocalDate start,
+                  LocalDate end) {
         validateDate(start, end);
-        this.notificationCategory = category;
+        this.noticeCategory = category;
         this.author = author;
         this.title = title;
         this.content = content;
@@ -58,8 +58,8 @@ public class Notification extends BaseEntity {
         this.endDate = end;
     }
 
-    public Notification(String category, Member author, String title, String content, LocalDate start, LocalDate end) {
-        this(NotificationCategory.from(category), author, title, content, start, end);
+    public Notice(String category, Member author, String title, String content, LocalDate start, LocalDate end) {
+        this(NoticeCategory.from(category), author, title, content, start, end);
     }
 
     private void validateDate(LocalDate startDate, LocalDate endDate) {
@@ -68,16 +68,16 @@ public class Notification extends BaseEntity {
         }
     }
 
-    public boolean isNotificationPast() {
+    public boolean isNoticePast() {
         LocalDate now = LocalDate.now();
         return startDate.isBefore(now);
     }
 
     public boolean isRoleAllowed() {
-        return notificationCategory.isRoleAllowed(author.getRole());
+        return noticeCategory.isRoleAllowed(author.getRole());
     }
 
     public boolean isValidUniversityCount(int universityCount) {
-        return notificationCategory.isValidUniversityCount(universityCount);
+        return noticeCategory.isValidUniversityCount(universityCount);
     }
 }

@@ -1,9 +1,9 @@
-package com.dongbaeb.demo.notification.controller;
+package com.dongbaeb.demo.notice.controller;
 
 import com.dongbaeb.demo.auth.infrastructure.JwtTokenProvider;
 import com.dongbaeb.demo.member.domain.Member;
 import com.dongbaeb.demo.member.repository.MemberRepository;
-import com.dongbaeb.demo.notification.dto.NotificationRequest;
+import com.dongbaeb.demo.notice.dto.NoticeRequest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import java.time.LocalDate;
@@ -22,7 +22,7 @@ import org.springframework.test.context.TestPropertySource;
 @TestPropertySource(properties = {"spring.config.location = classpath:test-application.yml"})
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-class NotificationControllerTest {
+class NoticeControllerTest {
     @Autowired
     MemberRepository memberRepository;
     @Autowired
@@ -37,19 +37,19 @@ class NotificationControllerTest {
 
     @Test
     @DisplayName("공지를 작성한다.")
-    void createNotificationTest() {
+    void createNoticeTest() {
         Member member = saveMember();
-        NotificationRequest notificationRequest =
-                new NotificationRequest("동서울", "제목", "내용", LocalDate.now(), LocalDate.now(), List.of("url"), List.of());
+        NoticeRequest noticeRequest =
+                new NoticeRequest("동서울", "제목", "내용", LocalDate.now(), LocalDate.now(), List.of("url"), List.of());
 
         RestAssured.given().log().all()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + createToken(member))
                 .contentType(ContentType.JSON)
-                .body(notificationRequest)
-                .when().post("/notifications")
+                .body(noticeRequest)
+                .when().post("/notices")
                 .then().log().all()
                 .statusCode(201)
-                .header("Location", "/notifications/1");
+                .header("Location", "/notices/1");
     }
 
     private Member saveMember() {

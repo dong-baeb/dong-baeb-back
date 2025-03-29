@@ -1,7 +1,7 @@
-package com.dongbaeb.demo.notification.dto;
+package com.dongbaeb.demo.notice.dto;
 
 import com.dongbaeb.demo.member.domain.Member;
-import com.dongbaeb.demo.notification.domain.Notification;
+import com.dongbaeb.demo.notice.domain.Notice;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
@@ -9,7 +9,7 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.List;
 
-public record NotificationRequest(
+public record NoticeRequest(
         @Schema(description = "카테고리", example = "동서울")
         @NotBlank(message = "카테고리는 필수 항목입니다.")
         String category,
@@ -32,7 +32,7 @@ public record NotificationRequest(
         @Schema(description = "학교")
         List<String> universities
 ) {
-    public Notification toNotification(Member author) {
-        return new Notification(category, author, title, content, startDate, endDate);
+    public Notice toNotice(Member author) {
+        return new Notice(category, author, title, content, startDate, endDate);
     }
 }
