@@ -1,4 +1,4 @@
-package com.dongbaeb.demo.notification.domain;
+package com.dongbaeb.demo.notice.domain;
 
 import com.dongbaeb.demo.global.entity.BaseEntity;
 import com.dongbaeb.demo.global.exception.BadRequestException;

@@ -1,7 +1,7 @@
-package com.dongbaeb.demo.notification.repository;
+package com.dongbaeb.demo.notice.repository;
 
-import com.dongbaeb.demo.notification.domain.Notice;
-import com.dongbaeb.demo.notification.domain.NoticePhoto;
+import com.dongbaeb.demo.notice.domain.Notice;
+import com.dongbaeb.demo.notice.domain.NoticePhoto;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 

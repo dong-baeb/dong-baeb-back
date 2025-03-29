@@ -1,11 +1,11 @@
-package com.dongbaeb.demo.notification.controller;
+package com.dongbaeb.demo.notice.controller;
 
 import com.dongbaeb.demo.global.dto.MemberAuth;
 import com.dongbaeb.demo.member.domain.University;
-import com.dongbaeb.demo.notification.domain.NoticeCategory;
-import com.dongbaeb.demo.notification.service.NotificationService;
+import com.dongbaeb.demo.notice.domain.NoticeCategory;
+import com.dongbaeb.demo.notice.dto.NoticeResponse;
+import com.dongbaeb.demo.notice.service.NotificationService;
 import java.util.List;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,18 +34,18 @@ public class NoticeController {
 //    }
 
     @GetMapping("/")
-    public ResponseEntity<List<Map<String, Object>>> getNotices(@RequestParam("category") NoticeCategory noticeCategory,
-                                                                @RequestParam("name") University name,
-                                                                @RequestParam("page") Integer page,
-                                                                MemberAuth memberAuth) {
-        ResponseEntity<List<Map<String, Object>>> response;
+    public ResponseEntity<List<NoticeResponse>> getNotices(@RequestParam("category") NoticeCategory noticeCategory,
+                                                           @RequestParam("name") University name,
+                                                           @RequestParam("page") Integer page,
+                                                           MemberAuth memberAuth) {
+        List<NoticeResponse> notices;
 
         if (NoticeCategory.EAST_SEOUL.equals(noticeCategory)) {
-            response = notificationService.getAllCouncilsNotification(page);
+            notices = notificationService.getAllCouncilsNotification(page);
         } else {
-            response = notificationService.getByUniversityName(name, memberAuth);
+            notices = notificationService.getByUniversityName(name, memberAuth);
         }
 
-        return response;
+        return ResponseEntity.ok(notices);
     }
 }
