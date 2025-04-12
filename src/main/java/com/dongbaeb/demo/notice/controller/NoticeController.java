@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "Notice 전체 조회 관련 API 요청", description = "Notice 공지 전체 목록 조회 등의 역할을 한다.")
 @RequiredArgsConstructor
-@RequestMapping("/notifications")
+@RequestMapping("/notice")
 @RestController
 public class NoticeController {
 
