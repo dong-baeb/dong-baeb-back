@@ -6,6 +6,5 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface NotificationPhotoRepository extends JpaRepository<NoticePhoto, Long> {
-
     List<NoticePhoto> findByNotice(Notice notice);
 }
