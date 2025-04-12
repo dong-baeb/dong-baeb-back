@@ -8,12 +8,14 @@ import com.dongbaeb.demo.member.domain.University;
 import com.dongbaeb.demo.member.repository.MemberRepository;
 import com.dongbaeb.demo.member.repository.MemberUniversityRepository;
 import com.dongbaeb.demo.notice.domain.Notice;
+import com.dongbaeb.demo.notice.domain.NoticeCategory;
 import com.dongbaeb.demo.notice.domain.NoticePhoto;
 import com.dongbaeb.demo.notice.domain.NoticeUniversity;
 import com.dongbaeb.demo.notice.dto.NoticeRequest;
 import com.dongbaeb.demo.notice.repository.NoticePhotoRepository;
 import com.dongbaeb.demo.notice.repository.NoticeRepository;
 import com.dongbaeb.demo.notice.repository.NoticeUniversityRepository;
+import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -101,4 +103,33 @@ public class NoticeService {
                 .toList();
         noticeUniversityRepository.saveAll(noticeUniversities);
     }
+
+    @Transactional
+    public void updateNotice(Long noticeId, NoticeRequest request, MemberAuth author) {
+        Notice notice = noticeRepository.findById(noticeId)
+                .orElseThrow(() -> new EntityNotFoundException("공지 없음"));
+
+        // 권한 확인 로직이 필요하다면 여기서 체크
+        if (!notice.isRoleAllowed()) {
+            throw new ForbiddenException("작성자만 공지를 수정할 수 있습니다.");
+        }
+
+        // 공지 내용 업데이트
+        notice.update(
+                request.title(),
+                request.content(),
+                request.startDate(),
+                request.endDate(),
+                NoticeCategory.from(request.category())
+        );
+
+        // 연관된 사진, 학교도 필요하면 업데이트 (예: 기존 삭제 후 다시 저장)
+        // updateNoticePhotos(notice, request.imageUrls());
+        // updateNoticeUniversities(notice, request.universities());
+
+        // save는 없어도 됨. JPA가 @Transactional 안에서 dirty checking으로 자동 반영
+
+    }
+
+
 }

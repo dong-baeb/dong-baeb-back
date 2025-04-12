@@ -14,7 +14,9 @@ import jakarta.validation.Valid;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,13 +29,13 @@ public class NoticeController {
     private final NoticeService noticeService;
 
     @Operation(
-            summary = "공지 작성",
-            description = "공지를 작성한다."
-    )
+            summary = "공지 수정",
+            description = "공지를 수정한다.")
+
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "201",
-                    description = "공지 작성 성공"
+                    description = "공지 수정 성공"
             ),
             @ApiResponse(
                     responseCode = "401",
@@ -54,4 +56,14 @@ public class NoticeController {
         return ResponseEntity.created(URI.create("/notices/" + noticeId))
                 .build();
     }
+
+    @PutMapping("/notices/{id}")
+    public ResponseEntity<Void> updateNotice(
+            @PathVariable("id") Long noticeId,
+            @RequestBody @Valid NoticeRequest request,
+            MemberAuth memberAuth) {
+        noticeService.updateNotice(noticeId, request, memberAuth);
+        return ResponseEntity.ok().build();
+    }
+
 }

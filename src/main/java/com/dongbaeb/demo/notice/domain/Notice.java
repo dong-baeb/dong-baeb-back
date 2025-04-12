@@ -80,4 +80,13 @@ public class Notice extends BaseEntity {
     public boolean isValidUniversityCount(int universityCount) {
         return noticeCategory.isValidUniversityCount(universityCount);
     }
+
+    public void update(String title, String content, LocalDate startDate, LocalDate endDate, NoticeCategory category) {
+        validateDate(startDate, endDate);
+        this.title = title;
+        this.content = content;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.noticeCategory = category;
+    }
 }
