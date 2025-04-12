@@ -36,7 +36,7 @@ public class NoticeController {
             )
     })
     @GetMapping("/{id}")
-    public ResponseEntity<?> readNotice(
+    public ResponseEntity<NoticeResponse> readNotice(
             @PathVariable("id") Long id,
             MemberAuth memberAuth) {
         NoticeResponse response = noticeService.readNotice(id, memberAuth);
