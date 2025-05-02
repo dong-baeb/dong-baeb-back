@@ -148,7 +148,7 @@ public class NoticeService {
 
     public List<NoticeResponse> getByUniversityName(University name, Pageable pageable, MemberAuth memberAuth) {
 
-//        validateUniversity(memberAuth.memberId(), name);
+        validateUniversity(memberAuth.memberId(), name);
 
         List<NoticeResponse> noticeResponses = new ArrayList<>();
 

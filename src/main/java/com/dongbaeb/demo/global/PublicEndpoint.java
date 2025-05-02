@@ -11,10 +11,7 @@ public enum PublicEndpoint {
     SIGN_UP(HttpMethod.POST, "/sign-up"),
     SWAGGER_UI(HttpMethod.GET, "/swagger-ui/**"),
     SWAGGER_RESOURCE(HttpMethod.GET, "/swagger-resources/**"),
-    API_DOCS(HttpMethod.GET, "/v3/api-docs/**"),
-    NOTICE_GET(HttpMethod.GET, "/notices/**"),
-    NOTICE_POST(HttpMethod.POST, "/notices/**"),
-    NOTICE_DELETE(HttpMethod.DELETE, "/notices/**");
+    API_DOCS(HttpMethod.GET, "/v3/api-docs/**");
 
 
     private static final List<PublicEndpoint> PUBLIC_ENDPOINTS = Arrays.asList(values());
