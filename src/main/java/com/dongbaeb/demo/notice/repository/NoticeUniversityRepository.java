@@ -12,4 +12,9 @@ public interface NoticeUniversityRepository extends JpaRepository<NoticeUniversi
     Page<NoticeUniversity> findByUniversity(University university, Pageable pageable);
 
     List<NoticeUniversity> findByNotice(Notice notice);
+
+    List<NoticeUniversity> findByNoticeId(Long noticeId);
+
+    void deleteByNotice(Notice notice);
+
 }

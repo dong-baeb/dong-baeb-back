@@ -73,11 +73,20 @@ public class Notice extends BaseEntity {
         return startDate.isBefore(now);
     }
 
+
     public boolean isRoleAllowed() {
         return noticeCategory.isRoleAllowed(author.getRole());
     }
 
     public boolean isValidUniversityCount(int universityCount) {
         return noticeCategory.isValidUniversityCount(universityCount);
+    }
+
+    public boolean isStartDateBefore(LocalDate localDate) {
+        return startDate.isBefore(localDate);
+    }
+
+    public boolean isEastSeoulCategory() {
+        return noticeCategory.equals(NoticeCategory.EAST_SEOUL);
     }
 }

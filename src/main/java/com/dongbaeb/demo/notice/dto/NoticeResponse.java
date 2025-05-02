@@ -35,8 +35,8 @@ public record NoticeResponse(
         LocalDateTime createdAt,
         LocalDateTime updatedAt
 ) {
-    public static NoticeResponse from(Notice notice, List<NoticePhoto> photos, List<NoticeUniversity> universities) {
 
+    public static NoticeResponse from(Notice notice, List<NoticePhoto> photos, List<NoticeUniversity> universities) {
         return new NoticeResponse(
                 notice.getId(),
                 notice.getNoticeCategory().name(),
@@ -62,9 +62,5 @@ public record NoticeResponse(
         return universities.stream()
                 .map(noticeUniversity -> noticeUniversity.getUniversity().name())
                 .collect(Collectors.toList());
-
     }
 }
-
-
-

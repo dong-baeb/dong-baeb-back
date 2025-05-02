@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.dongbaeb.demo.global.dto.MemberAuth;
+<<<<<<< HEAD
 import com.dongbaeb.demo.global.exception.BadRequestException;
 import com.dongbaeb.demo.global.exception.ForbiddenException;
 import com.dongbaeb.demo.member.domain.Member;
@@ -17,21 +18,51 @@ import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+=======
+import com.dongbaeb.demo.global.exception.ForbiddenException;
+import com.dongbaeb.demo.member.domain.MemberUniversity;
+import com.dongbaeb.demo.member.domain.University;
+import com.dongbaeb.demo.member.repository.MemberRepository;
+import com.dongbaeb.demo.member.repository.MemberUniversityRepository;
+import com.dongbaeb.demo.notice.domain.Notice;
+import com.dongbaeb.demo.notice.domain.NoticePhoto;
+import com.dongbaeb.demo.notice.domain.NoticeUniversity;
+import com.dongbaeb.demo.member.domain.Member;
+import com.dongbaeb.demo.notice.dto.NoticeResponse;
+import com.dongbaeb.demo.notice.repository.NoticePhotoRepository;
+import com.dongbaeb.demo.notice.repository.NoticeRepository;
+import com.dongbaeb.demo.notice.repository.NoticeUniversityRepository;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+>>>>>>> 5662a9ba8598430a16fa93f6e5762f874bd52c33
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 
+<<<<<<< HEAD
+=======
+import java.time.LocalDate;
+import java.util.List;
+
+>>>>>>> 5662a9ba8598430a16fa93f6e5762f874bd52c33
 @DataJpaTest
 @Import({NoticeService.class})
 @TestPropertySource(properties = {"spring.config.location = classpath:test-application.yml"})
 class NoticeServiceTest {
     @Autowired
+<<<<<<< HEAD
     NoticeService noticeService;
+=======
+    NoticeRepository noticeRepository;
+>>>>>>> 5662a9ba8598430a16fa93f6e5762f874bd52c33
     @Autowired
     MemberRepository memberRepository;
     @Autowired
     MemberUniversityRepository memberUniversityRepository;
+<<<<<<< HEAD
 
     @Test
     @DisplayName("과거 날짜에 대한 공지 작성 시 예외가 발생한다.")
@@ -133,11 +164,156 @@ class NoticeServiceTest {
     }
 
     private Member saveMember(Role role) {
+=======
+    @Autowired
+    NoticeService noticeService;
+    @Autowired
+    NoticePhotoRepository noticePhotoRepository;
+    @Autowired
+    NoticeUniversityRepository noticeUniversityRepository;
+
+    @Test
+    @DisplayName("공지를 정상적으로 조회한다.")
+    void readNoticeTest() {
+        // given
+        Member author = saveMember("리더");
+        Notice notice = saveTestNotice(author);
+        saveMemberUniversity(author, University.KONKUK);
+
+        // when
+        NoticeResponse response = noticeService.readNotice(notice.getId(), new MemberAuth(author.getId()));
+
+        // then
+        assertThat(response).isNotNull();
+        assertThat(response.id()).isEqualTo(notice.getId());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"멤버", "리더", "간사"})
+    @DisplayName("누구나 동서울 카테고리 공지를 조회할 수 있다.")
+    void readNoticeEastSeoulCategoryTest(String role) {
+        // given
+        Member author = saveMember("간사");
+        Notice notice = new Notice("동서울", author, "제목", "내용", LocalDate.now(), LocalDate.now());
+        noticeRepository.save(notice);
+        List<String> noticeImageUrls = savePhotos(notice).stream()
+                .map(NoticePhoto::getImageUrl)
+                .toList();
+        Member member = new Member(2L, role, "동백2", "동백2", "url", "2025");
+        memberRepository.save(member);
+
+        // when
+        NoticeResponse response = noticeService.readNotice(notice.getId(), new MemberAuth(member.getId()));
+
+        // then
+        assertThat(response).isNotNull();
+        assertThat(response.id()).isEqualTo(notice.getId());
+        assertThat(response.imageUrls()).containsExactlyElementsOf(noticeImageUrls);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"멤버", "리더"})
+    @DisplayName("다른 학교의 공지 조회 시 예외가 발생한다.")
+    void readNoticeValidateUniversityExceptionTest(String role) {
+        // given
+        Member author = saveMember("리더");
+        Notice notice = saveTestNotice(author);
+        Member member = new Member(2L, role, "동백2", "동백2", "url", "2025");
+        memberRepository.save(member);
+        saveMemberUniversity(member, University.SIRIB);
+
+        // when & then
+        assertThatThrownBy(() -> noticeService.readNotice(notice.getId(), new MemberAuth(member.getId())))
+                .isInstanceOf(ForbiddenException.class)
+                .hasMessage("공지 조회 권한이 없습니다.");
+    }
+
+    @Test
+    @DisplayName("간사는 자신의 소속 학교가 아닌 공지를 조회할 수 있다.")
+    void readNoticeValidateMissionaryAccessTest() {
+        // given
+        Member author = saveMember("리더");
+        Notice notice = saveTestNotice(author);
+        Member missionary = new Member(2L, "간사", "동백2", "동백2", "url", "2025");
+        memberRepository.save(missionary);
+        saveMemberUniversity(missionary, University.SIRIB);
+
+        // when
+        NoticeResponse response = noticeService.readNotice(notice.getId(), new MemberAuth(missionary.getId()));
+
+        // then
+        assertThat(response).isNotNull();
+        assertThat(response.id()).isEqualTo(notice.getId());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"멤버", "리더", "간사"})
+    @DisplayName("작성자는 공지를 정상적으로 삭제할 수 있다.")
+    void deleteNoticeTest(String role) {
+        // given
+        Member author = saveMember(role);
+        Notice notice = saveTestNotice(author);
+
+        // when
+        noticeService.deleteNotice(notice.getId(), new MemberAuth(author.getId()));
+
+        // then
+        assertThat(noticeRepository.existsById(notice.getId())).isFalse();
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"멤버", "리더", "간사"})
+    @DisplayName("작성자 외의 공지를 삭제하려는 경우 예외가 발생한다.")
+    void deleteNoticeExceptionTest(String role) {
+        // given
+        Member author = saveMember("리더");
+        Notice notice = saveTestNotice(author);
+        Member member = new Member(2L, role, "동백2", "동백2", "url", "2025");
+        memberRepository.save(member);
+
+        // when & then
+        assertThatThrownBy(() -> noticeService.deleteNotice(notice.getId(), new MemberAuth(member.getId())))
+                .isInstanceOf(ForbiddenException.class)
+                .hasMessage("공지 삭제 권한이 없습니다.");
+    }
+
+    private Member saveMember(String role) {
+>>>>>>> 5662a9ba8598430a16fa93f6e5762f874bd52c33
         Member member = new Member(1L, role, "동백", "동백", "url", "2025");
         return memberRepository.save(member);
     }
 
+<<<<<<< HEAD
     private MemberUniversity saveMemberUniversity(Member member, University university) {
         return memberUniversityRepository.save(new MemberUniversity(member, university));
+=======
+    private void saveMemberUniversity(Member member, University university) {
+        memberUniversityRepository.save(new MemberUniversity(member, university));
+    }
+
+    private Notice saveTestNotice(Member author) {
+        Notice notice = saveNotice(author);
+        List<NoticePhoto> photos = savePhotos(notice);
+        List<NoticeUniversity> universities = saveNoticeUniversities(notice);
+        return notice;
+    }
+
+    private Notice saveNotice(Member author) {
+        Notice notice = new Notice("학교", author, "제목", "내용",
+                LocalDate.now(), LocalDate.now());
+        return noticeRepository.save(notice);
+    }
+
+    private List<NoticePhoto> savePhotos(Notice notice) {
+        NoticePhoto photo1 = new NoticePhoto(notice, "https://xxx.xxx.xxx");
+        NoticePhoto photo2 = new NoticePhoto(notice, "https://yyy.yyy.yyy");
+        return noticePhotoRepository.saveAll(List.of(photo1, photo2));
+    }
+
+    private List<NoticeUniversity> saveNoticeUniversities(Notice notice) {
+        NoticeUniversity university1 = new NoticeUniversity(notice, University.KWANGWOON);
+        NoticeUniversity university2 = new NoticeUniversity(notice, University.KONKUK);
+        return noticeUniversityRepository.saveAll(List.of(university1, university2));
+>>>>>>> 5662a9ba8598430a16fa93f6e5762f874bd52c33
     }
 }

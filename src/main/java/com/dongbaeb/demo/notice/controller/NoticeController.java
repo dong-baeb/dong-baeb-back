@@ -20,7 +20,9 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,7 +34,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/notices")
 @RestController
 public class NoticeController {
-
 
     private final NoticeService noticeService;
 
@@ -66,16 +67,6 @@ public class NoticeController {
             @ApiResponse(
                     responseCode = "201",
                     description = "공지 작성 성공"
-            ),
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "유효하지 않은 액세스 토큰으로 인한 실패",
-                    content = @Content(schema = @Schema(implementation = ExceptionResponse.class))
-            ),
-            @ApiResponse(
-                    responseCode = "403",
-                    description = "권한 부족으로 인한 실패",
-                    content = @Content(schema = @Schema(implementation = ExceptionResponse.class))
             )
     })
     @PostMapping
@@ -87,5 +78,62 @@ public class NoticeController {
                 .build();
 
     }
-}
 
+    @Operation(
+            summary = "공지 조회",
+            description = "공지 ID로 공지를 조회한다."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "공지 조회 성공",
+                    content = @Content(schema = @Schema(implementation = NoticeResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "공지 없음",
+                    content = @Content(schema = @Schema(implementation = ExceptionResponse.class))
+            )
+    })
+    @GetMapping("/{id}")
+    public ResponseEntity<NoticeResponse> readNotice(
+            @PathVariable("id") Long id,
+            MemberAuth memberAuth) {
+        NoticeResponse response = noticeService.readNotice(id, memberAuth);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(
+            summary = "공지 삭제",
+            description = "공지 ID로 공지를 삭제한다."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "공지 삭제 성공"
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "유효하지 않은 액세스 토큰으로 인한 실패",
+                    content = @Content(schema = @Schema(implementation = ExceptionResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "권한 부족으로 인한 실패",
+                    content = @Content(schema = @Schema(implementation = ExceptionResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "공지 없음",
+                    content = @Content(schema = @Schema(implementation = ExceptionResponse.class))
+            )
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteNotice(
+            @PathVariable("id") Long id,
+            MemberAuth memberAuth) {
+        noticeService.deleteNotice(id, memberAuth);
+        return ResponseEntity.noContent()
+                .build();
+    }
+}

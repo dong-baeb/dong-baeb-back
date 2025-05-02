@@ -66,4 +66,8 @@ public class Member extends BaseEntity {
     public boolean isLeader() {
         return role.equals(Role.LEADER);
     }
+
+    public boolean isRole(String role) {
+        return this.role == Role.from(role);
+    }
 }

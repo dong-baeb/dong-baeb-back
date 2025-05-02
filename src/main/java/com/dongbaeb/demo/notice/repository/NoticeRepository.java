@@ -12,3 +12,5 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
 
     Page<Notice> findByNoticeCategoryOrderByIdAsc(NoticeCategory noticeCategory, Pageable pageable);
 }
+
+
