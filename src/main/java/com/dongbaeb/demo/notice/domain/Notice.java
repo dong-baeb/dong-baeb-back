@@ -68,9 +68,9 @@ public class Notice extends BaseEntity {
         }
     }
 
-    public boolean isNotificationFuture() {
+    public boolean isNoticePast() {
         LocalDate now = LocalDate.now();
-        return startDate.isEqual(now) || startDate.isAfter(now);
+        return startDate.isBefore(now);
     }
 
     public boolean isRoleAllowed() {

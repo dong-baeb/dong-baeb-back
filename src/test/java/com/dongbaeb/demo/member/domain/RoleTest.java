@@ -15,37 +15,37 @@ class RoleTest {
     @DisplayName("학교 수가 음수인 경우 예외가 발생한다.")
     @ParameterizedTest
     @ValueSource(ints = {-1, -100})
-    void isValidUniversitiesCountNegativeCountExceptionTest(int universitiesCount) {
-        assertThatCode(() -> Role.MEMBER.isValidUniversitiesCount(universitiesCount))
+    void isValidUniversityCountNegativeCountExceptionTest(int universitiesCount) {
+        assertThatCode(() -> Role.MEMBER.isValidUniversityCount(universitiesCount))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("학교 수는 양수이어야 합니다.");
     }
 
     @DisplayName("멤버, 리더, 학사는 1개의 학교에만 소속될 수 있다.")
     @ParameterizedTest
-    @EnumSource(value = Role.class, names = {"MEMBER", "LEADER", "BACHELOR"})
-    void isValidUniversitiesCountWithStudentTrueTest(Role role) {
-        assertThat(role.isValidUniversitiesCount(1))
+    @EnumSource(value = Role.class, names = {"MEMBER", "LEADER", "GRADUATE"})
+    void isValidUniversityCountWithStudentTrueTest(Role role) {
+        assertThat(role.isValidUniversityCount(1))
                 .isTrue();
     }
 
     @DisplayName("멤버, 리더, 학사는 0개나 2개 이상의 학교에 소속될 수 없다.")
     @ParameterizedTest
-    @EnumSource(value = Role.class, names = {"MEMBER", "LEADER", "BACHELOR"})
-    void isValidUniversitiesCountWithStudentFalseTest(Role role) {
+    @EnumSource(value = Role.class, names = {"MEMBER", "LEADER", "GRADUATE"})
+    void isValidUniversityCountWithStudentFalseTest(Role role) {
         assertAll(
-                () -> assertThat(role.isValidUniversitiesCount(0)).isFalse(),
-                () -> assertThat(role.isValidUniversitiesCount(2)).isFalse()
+                () -> assertThat(role.isValidUniversityCount(0)).isFalse(),
+                () -> assertThat(role.isValidUniversityCount(2)).isFalse()
         );
     }
 
     @DisplayName("간사는 학교에 아예 소속되지 않거나 여러 개의 학교에 소속될 수 있다.")
     @Test
-    void isValidUniversitiesCountWithMissionaryTrueTest() {
+    void isValidUniversityCountWithMissionaryTrueTest() {
         assertAll(
-                () -> assertThat(Role.MISSIONARY.isValidUniversitiesCount(0)).isTrue(),
-                () -> assertThat(Role.MISSIONARY.isValidUniversitiesCount(1)).isTrue(),
-                () -> assertThat(Role.MISSIONARY.isValidUniversitiesCount(2)).isTrue()
+                () -> assertThat(Role.MISSIONARY.isValidUniversityCount(0)).isTrue(),
+                () -> assertThat(Role.MISSIONARY.isValidUniversityCount(1)).isTrue(),
+                () -> assertThat(Role.MISSIONARY.isValidUniversityCount(2)).isTrue()
         );
     }
 

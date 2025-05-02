@@ -20,7 +20,7 @@ public class NoticePhoto {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "notification_id", nullable = false)
+    @JoinColumn(name = "notice_id", nullable = false)
     private Notice notice;
 
     @Column(nullable = false)

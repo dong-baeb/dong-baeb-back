@@ -6,6 +6,7 @@ import com.dongbaeb.demo.notice.domain.NoticeUniversity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,7 +30,10 @@ public record NoticeResponse(
         @Schema(description = "사진 URL")
         List<String> imageUrls,
         @Schema(description = "학교")
-        List<String> universities
+        List<String> universities,
+
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt
 ) {
     public static NoticeResponse from(Notice notice, List<NoticePhoto> photos, List<NoticeUniversity> universities) {
 
@@ -42,7 +46,9 @@ public record NoticeResponse(
                 notice.getStartDate(),
                 notice.getEndDate(),
                 extractImageUrls(photos),
-                extractUniversities(universities)
+                extractUniversities(universities),
+                notice.getCreatedAt(),
+                notice.getUpdatedAt()
         );
     }
 
@@ -56,5 +62,9 @@ public record NoticeResponse(
         return universities.stream()
                 .map(noticeUniversity -> noticeUniversity.getUniversity().name())
                 .collect(Collectors.toList());
+
     }
 }
+
+
+

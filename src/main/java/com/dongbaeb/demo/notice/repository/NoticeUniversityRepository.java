@@ -8,7 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface NotificationUniversityRepository extends JpaRepository<NoticeUniversity, Long> {
+public interface NoticeUniversityRepository extends JpaRepository<NoticeUniversity, Long> {
     Page<NoticeUniversity> findByUniversity(University university, Pageable pageable);
 
     List<NoticeUniversity> findByNotice(Notice notice);

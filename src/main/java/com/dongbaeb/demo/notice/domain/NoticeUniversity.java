@@ -23,7 +23,7 @@ public class NoticeUniversity {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "notification_id", nullable = false)
+    @JoinColumn(name = "notice_id", nullable = false)
     private Notice notice;
 
     @Enumerated(EnumType.STRING)
