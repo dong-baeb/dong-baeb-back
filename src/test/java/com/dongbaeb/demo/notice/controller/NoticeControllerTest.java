@@ -24,6 +24,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -51,6 +52,14 @@ class NoticeControllerTest {
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
+        resetRepository();
+    }
+
+    private void resetRepository() {
+        noticePhotoRepository.deleteAll();
+        noticeUniversityRepository.deleteAll();
+        noticeRepository.deleteAll();
+        memberRepository.deleteAll();
     }
 
     @Test
