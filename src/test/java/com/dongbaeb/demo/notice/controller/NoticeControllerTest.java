@@ -69,14 +69,33 @@ class NoticeControllerTest {
         NoticeRequest noticeRequest =
                 new NoticeRequest("동서울", "제목", "내용", LocalDate.now(), LocalDate.now(), List.of("url"), List.of());
 
-        RestAssured.given().log().all()
+//        RestAssured.given().log().all()
+//                .header(HttpHeaders.AUTHORIZATION, "Bearer " + createToken(member))
+//                .contentType(ContentType.JSON)
+//                .body(noticeRequest)
+//                .when().post("/notices")
+//                .then().log().all()
+//                .statusCode(201)
+//                .header("Location", "/notices/1");
+
+        String location = RestAssured.given().log().all()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + createToken(member))
                 .contentType(ContentType.JSON)
                 .body(noticeRequest)
                 .when().post("/notices")
                 .then().log().all()
                 .statusCode(201)
-                .header("Location", "/notices/2");
+                .extract()
+                .header("Location");
+
+        String idStr = location.substring(location.lastIndexOf("/") + 1);
+        Long id = Long.parseLong(idStr);
+
+        // id가 0보다 큰 값인지 기본 검증
+        assertThat(id).isGreaterThan(0L);
+
+        // 데이터베이스에서 실제 존재하는지 검증 (예: JPA repository 사용)
+        assertThat(noticeRepository.existsById(id)).isTrue();
     }
 
     @Test
