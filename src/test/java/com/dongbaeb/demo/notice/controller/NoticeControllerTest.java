@@ -24,7 +24,6 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -52,14 +51,6 @@ class NoticeControllerTest {
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
-//        resetRepository();
-    }
-
-    private void resetRepository() {
-        noticePhotoRepository.deleteAll();
-        noticeUniversityRepository.deleteAll();
-        noticeRepository.deleteAll();
-        memberRepository.deleteAll();
     }
 
     @Test
@@ -91,10 +82,7 @@ class NoticeControllerTest {
         String idStr = location.substring(location.lastIndexOf("/") + 1);
         Long id = Long.parseLong(idStr);
 
-        // id가 0보다 큰 값인지 기본 검증
         assertThat(id).isGreaterThan(0L);
-
-        // 데이터베이스에서 실제 존재하는지 검증 (예: JPA repository 사용)
         assertThat(noticeRepository.existsById(id)).isTrue();
     }
 
