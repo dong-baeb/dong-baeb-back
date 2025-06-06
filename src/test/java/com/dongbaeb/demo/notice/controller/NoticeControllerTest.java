@@ -52,7 +52,7 @@ class NoticeControllerTest {
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
-        resetRepository();
+//        resetRepository();
     }
 
     private void resetRepository() {
