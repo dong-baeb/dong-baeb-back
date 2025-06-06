@@ -89,6 +89,9 @@ class NoticeControllerTest {
                 .extract()
                 .as(NoticeResponse.class);
 
+        System.out.println(actualResponse.toString());
+        System.out.println(expectedResponse.toString());
+
         //then
         assertThat(actualResponse).isEqualTo(expectedResponse);
     }
