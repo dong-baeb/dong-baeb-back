@@ -2,25 +2,18 @@ package com.dongbaeb.demo.notice.controller;
 
 import com.dongbaeb.demo.auth.infrastructure.JwtTokenProvider;
 import com.dongbaeb.demo.member.domain.Member;
-<<<<<<< HEAD
-import com.dongbaeb.demo.member.repository.MemberRepository;
-import com.dongbaeb.demo.notice.dto.NoticeRequest;
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
-=======
 import com.dongbaeb.demo.member.domain.University;
 import com.dongbaeb.demo.member.repository.MemberRepository;
 import com.dongbaeb.demo.notice.domain.Notice;
 import com.dongbaeb.demo.notice.domain.NoticePhoto;
 import com.dongbaeb.demo.notice.domain.NoticeUniversity;
+import com.dongbaeb.demo.notice.dto.NoticeRequest;
 import com.dongbaeb.demo.notice.dto.NoticeResponse;
 import com.dongbaeb.demo.notice.repository.NoticePhotoRepository;
 import com.dongbaeb.demo.notice.repository.NoticeRepository;
 import com.dongbaeb.demo.notice.repository.NoticeUniversityRepository;
 import io.restassured.RestAssured;
->>>>>>> 5662a9ba8598430a16fa93f6e5762f874bd52c33
-import java.time.LocalDate;
-import java.util.List;
+import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,11 +25,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 
-<<<<<<< HEAD
-=======
+import java.time.LocalDate;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
->>>>>>> 5662a9ba8598430a16fa93f6e5762f874bd52c33
 @TestPropertySource(properties = {"spring.config.location = classpath:test-application.yml"})
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -44,17 +37,15 @@ class NoticeControllerTest {
     @Autowired
     MemberRepository memberRepository;
     @Autowired
-<<<<<<< HEAD
-=======
     NoticeRepository noticeRepository;
     @Autowired
     NoticePhotoRepository noticePhotoRepository;
     @Autowired
     NoticeUniversityRepository noticeUniversityRepository;
     @Autowired
->>>>>>> 5662a9ba8598430a16fa93f6e5762f874bd52c33
     JwtTokenProvider jwtTokenProvider;
     @LocalServerPort
+
     private int port;
 
     @BeforeEach
@@ -63,7 +54,6 @@ class NoticeControllerTest {
     }
 
     @Test
-<<<<<<< HEAD
     @DisplayName("공지를 작성한다.")
     void createNoticeTest() {
         Member member = saveMember();
@@ -77,8 +67,10 @@ class NoticeControllerTest {
                 .when().post("/notices")
                 .then().log().all()
                 .statusCode(201)
-                .header("Location", "/notices/1");
-=======
+                .header("Location", "/notices/2");
+    }
+
+    @Test
     @DisplayName("공지를 정상적으로 조회한다.")
     void readNoticeTest() {
         // given
@@ -121,7 +113,6 @@ class NoticeControllerTest {
         assertThat(noticeRepository.existsById(notice.getId())).isFalse();
         assertThat(noticePhotoRepository.findByNoticeId(notice.getId())).isEmpty();
         assertThat(noticeUniversityRepository.findByNoticeId(notice.getId())).isEmpty();
->>>>>>> 5662a9ba8598430a16fa93f6e5762f874bd52c33
     }
 
     private Member saveMember() {
@@ -129,8 +120,6 @@ class NoticeControllerTest {
         return memberRepository.save(member);
     }
 
-<<<<<<< HEAD
-=======
     private Notice saveNotice(Member author) {
         Notice notice = new Notice("동서울", author, "동서울 연합 수련회", "동서울 연합 수련회를 진행합니다!",
                 LocalDate.now(), LocalDate.now());
@@ -149,7 +138,6 @@ class NoticeControllerTest {
         return noticeUniversityRepository.saveAll(List.of(university1, university2));
     }
 
->>>>>>> 5662a9ba8598430a16fa93f6e5762f874bd52c33
     private String createToken(Member member) {
         return jwtTokenProvider.createAccessToken(member.getId());
     }

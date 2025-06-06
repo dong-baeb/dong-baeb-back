@@ -1,10 +1,6 @@
 package com.dongbaeb.demo.notice.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 import com.dongbaeb.demo.global.dto.MemberAuth;
-<<<<<<< HEAD
 import com.dongbaeb.demo.global.exception.BadRequestException;
 import com.dongbaeb.demo.global.exception.ForbiddenException;
 import com.dongbaeb.demo.member.domain.Member;
@@ -13,21 +9,10 @@ import com.dongbaeb.demo.member.domain.Role;
 import com.dongbaeb.demo.member.domain.University;
 import com.dongbaeb.demo.member.repository.MemberRepository;
 import com.dongbaeb.demo.member.repository.MemberUniversityRepository;
-import com.dongbaeb.demo.notice.dto.NoticeRequest;
-import java.time.LocalDate;
-import java.util.List;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-=======
-import com.dongbaeb.demo.global.exception.ForbiddenException;
-import com.dongbaeb.demo.member.domain.MemberUniversity;
-import com.dongbaeb.demo.member.domain.University;
-import com.dongbaeb.demo.member.repository.MemberRepository;
-import com.dongbaeb.demo.member.repository.MemberUniversityRepository;
 import com.dongbaeb.demo.notice.domain.Notice;
 import com.dongbaeb.demo.notice.domain.NoticePhoto;
 import com.dongbaeb.demo.notice.domain.NoticeUniversity;
-import com.dongbaeb.demo.member.domain.Member;
+import com.dongbaeb.demo.notice.dto.NoticeRequest;
 import com.dongbaeb.demo.notice.dto.NoticeResponse;
 import com.dongbaeb.demo.notice.repository.NoticePhotoRepository;
 import com.dongbaeb.demo.notice.repository.NoticeRepository;
@@ -36,33 +21,34 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
->>>>>>> 5662a9ba8598430a16fa93f6e5762f874bd52c33
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 
-<<<<<<< HEAD
-=======
 import java.time.LocalDate;
 import java.util.List;
 
->>>>>>> 5662a9ba8598430a16fa93f6e5762f874bd52c33
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 @DataJpaTest
 @Import({NoticeService.class})
 @TestPropertySource(properties = {"spring.config.location = classpath:test-application.yml"})
 class NoticeServiceTest {
     @Autowired
-<<<<<<< HEAD
     NoticeService noticeService;
-=======
+    @Autowired
     NoticeRepository noticeRepository;
->>>>>>> 5662a9ba8598430a16fa93f6e5762f874bd52c33
     @Autowired
     MemberRepository memberRepository;
     @Autowired
     MemberUniversityRepository memberUniversityRepository;
-<<<<<<< HEAD
+    @Autowired
+    NoticePhotoRepository noticePhotoRepository;
+    @Autowired
+    NoticeUniversityRepository noticeUniversityRepository;
+
 
     @Test
     @DisplayName("과거 날짜에 대한 공지 작성 시 예외가 발생한다.")
@@ -162,15 +148,6 @@ class NoticeServiceTest {
         // then
         assertThat(noticeId).isNotNull();
     }
-
-    private Member saveMember(Role role) {
-=======
-    @Autowired
-    NoticeService noticeService;
-    @Autowired
-    NoticePhotoRepository noticePhotoRepository;
-    @Autowired
-    NoticeUniversityRepository noticeUniversityRepository;
 
     @Test
     @DisplayName("공지를 정상적으로 조회한다.")
@@ -277,18 +254,19 @@ class NoticeServiceTest {
                 .hasMessage("공지 삭제 권한이 없습니다.");
     }
 
-    private Member saveMember(String role) {
->>>>>>> 5662a9ba8598430a16fa93f6e5762f874bd52c33
+    private Member saveMember(Role role) {
         Member member = new Member(1L, role, "동백", "동백", "url", "2025");
         return memberRepository.save(member);
     }
 
-<<<<<<< HEAD
+    private Member saveMember(String role) {
+        Member member = new Member(1L, role, "동백", "동백", "url", "2025");
+        return memberRepository.save(member);
+    }
+
+
     private MemberUniversity saveMemberUniversity(Member member, University university) {
         return memberUniversityRepository.save(new MemberUniversity(member, university));
-=======
-    private void saveMemberUniversity(Member member, University university) {
-        memberUniversityRepository.save(new MemberUniversity(member, university));
     }
 
     private Notice saveTestNotice(Member author) {
@@ -314,6 +292,5 @@ class NoticeServiceTest {
         NoticeUniversity university1 = new NoticeUniversity(notice, University.KWANGWOON);
         NoticeUniversity university2 = new NoticeUniversity(notice, University.KONKUK);
         return noticeUniversityRepository.saveAll(List.of(university1, university2));
->>>>>>> 5662a9ba8598430a16fa93f6e5762f874bd52c33
     }
 }
