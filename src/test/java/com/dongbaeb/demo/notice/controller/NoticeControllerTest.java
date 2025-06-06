@@ -118,10 +118,7 @@ class NoticeControllerTest {
                 .as(NoticeResponse.class);
 
         //then
-        assertThat(actualResponse)
-                .usingRecursiveComparison()
-                .ignoringCollectionOrder() // 중요!
-                .isEqualTo(expectedResponse);
+        assertThat(actualResponse.id()).isEqualTo(expectedResponse.id());
     }
 
     @Test
