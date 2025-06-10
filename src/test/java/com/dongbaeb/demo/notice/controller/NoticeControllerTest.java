@@ -60,15 +60,6 @@ class NoticeControllerTest {
         NoticeRequest noticeRequest =
                 new NoticeRequest("동서울", "제목", "내용", LocalDate.now(), LocalDate.now(), List.of("url"), List.of());
 
-//        RestAssured.given().log().all()
-//                .header(HttpHeaders.AUTHORIZATION, "Bearer " + createToken(member))
-//                .contentType(ContentType.JSON)
-//                .body(noticeRequest)
-//                .when().post("/notices")
-//                .then().log().all()
-//                .statusCode(201)
-//                .header("Location", "/notices/1");
-
         String location = RestAssured.given().log().all()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + createToken(member))
                 .contentType(ContentType.JSON)
