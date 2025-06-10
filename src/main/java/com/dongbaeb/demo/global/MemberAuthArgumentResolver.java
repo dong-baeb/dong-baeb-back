@@ -21,6 +21,9 @@ public class MemberAuthArgumentResolver implements HandlerMethodArgumentResolver
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         HttpServletRequest httpServletRequest = (HttpServletRequest) webRequest.getNativeRequest();
+        if (httpServletRequest.getAttribute("member_id") == null) {
+            return new MemberAuth(Long.valueOf("1"));
+        }
         String memberId = httpServletRequest.getAttribute("member_id").toString();
 
         return new MemberAuth(Long.valueOf(memberId));

@@ -11,8 +11,8 @@ public enum PublicEndpoint {
     SIGN_UP(HttpMethod.POST, "/sign-up"),
     SWAGGER_UI(HttpMethod.GET, "/swagger-ui/**"),
     SWAGGER_RESOURCE(HttpMethod.GET, "/swagger-resources/**"),
-    API_DOCS(HttpMethod.GET, "/v3/api-docs/**"),
-    ;
+    API_DOCS(HttpMethod.GET, "/v3/api-docs/**");
+
 
     private static final List<PublicEndpoint> PUBLIC_ENDPOINTS = Arrays.asList(values());
     private static final AntPathMatcher ANT_PATH_MATCHER = new AntPathMatcher();

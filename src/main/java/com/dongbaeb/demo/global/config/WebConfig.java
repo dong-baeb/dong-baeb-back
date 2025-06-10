@@ -3,9 +3,12 @@ package com.dongbaeb.demo.global.config;
 import com.dongbaeb.demo.global.KakaoUserInfoArgumentResolver;
 import com.dongbaeb.demo.global.MemberAuthArgumentResolver;
 import java.util.List;
+
+import com.dongbaeb.demo.global.MemberAuthArgumentResolver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @RequiredArgsConstructor

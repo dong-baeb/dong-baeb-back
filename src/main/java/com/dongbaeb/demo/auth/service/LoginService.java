@@ -60,7 +60,7 @@ public class LoginService {
 
     // TODO: MemberService 쪽과 통합하기
     private void validateUniversitiesCount(Member member, List<String> universities) {
-        if (!member.isValidUniversitiesCount(universities.size())) {
+        if (!member.isValidUniversityCount(universities.size())) {
             throw new BadRequestException("소속될 수 있는 학교의 개수가 올바르지 않습니다.");
         }
     }
