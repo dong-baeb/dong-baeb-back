@@ -104,6 +104,17 @@ public class NoticeController {
     }
 
     @Operation(
+            summary = "멤버 ID로 공지 가져오기",
+            description = "멤버 ID로 해당 멤버가 작성한 공지를 가지고 온다."
+    )
+    //API 응답 작성
+    @GetMapping("/member/{id}")
+    public ResponseEntity<List<NoticeResponse>> getNoticeByMemberId(@PathVariable Long id, MemberAuth memberAuth) {
+        List<NoticeResponse> foundNotices = noticeService.getNoticeByMemberId(id, memberAuth);
+        return ResponseEntity.ok(foundNotices);
+    }
+
+    @Operation(
             summary = "공지 삭제",
             description = "공지 ID로 공지를 삭제한다."
     )

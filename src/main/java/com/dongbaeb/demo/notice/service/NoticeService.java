@@ -20,6 +20,7 @@ import com.dongbaeb.demo.notice.repository.NoticeRepository;
 import com.dongbaeb.demo.notice.repository.NoticeUniversityRepository;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -57,6 +58,28 @@ public class NoticeService {
         validateReadAuthorization(member, notice, noticeUniversities);
 
         return NoticeResponse.from(notice, photos, noticeUniversities);
+    }
+
+    public List<NoticeResponse> getNoticeByMemberId(Long id, MemberAuth memberAuth) {
+        validateAuthority(id, memberAuth);
+
+        List<NoticeResponse> noticeResponses = new ArrayList<>();
+
+        Member author = findMemberById(id);
+        List<Notice> notices = noticeRepository.findByAuthor(author);
+        for (Notice notice : notices) {
+            List<NoticePhoto> noticePhotos = noticePhotoRepository.findByNotice(notice);
+            List<NoticeUniversity> noticeUniversities = noticeUniversityRepository.findByNotice(notice);
+            noticeResponses.add(NoticeResponse.from(notice, noticePhotos, noticeUniversities));
+        }
+
+        return noticeResponses;
+    }
+
+    private void validateAuthority(Long id, MemberAuth memberAuth) {
+        if (!Objects.equals(memberAuth.memberId(), id)) {
+            throw new ForbiddenException("다른 사용자가 작성한 공지는 조회할 수 없습니다.");
+        }
     }
 
     @Transactional
@@ -211,4 +234,6 @@ public class NoticeService {
         return noticeUniversities.stream()
                 .anyMatch(university -> memberUniversities.contains(university.getUniversity()));
     }
+
+
 }
