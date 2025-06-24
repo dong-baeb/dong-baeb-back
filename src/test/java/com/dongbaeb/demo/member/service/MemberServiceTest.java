@@ -3,14 +3,21 @@ package com.dongbaeb.demo.member.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
+import com.dongbaeb.demo.auth.dto.SignUpRequest;
+import com.dongbaeb.demo.auth.dto.kakao.KakaoUserInfo;
+import com.dongbaeb.demo.auth.service.LoginService;
 import com.dongbaeb.demo.global.dto.MemberAuth;
 import com.dongbaeb.demo.global.exception.BadRequestException;
 import com.dongbaeb.demo.global.exception.ForbiddenException;
 import com.dongbaeb.demo.global.exception.ResourceNotFoundException;
 import com.dongbaeb.demo.member.domain.Member;
+import com.dongbaeb.demo.member.domain.MemberUniversity;
+import com.dongbaeb.demo.member.domain.Role;
+import com.dongbaeb.demo.member.domain.University;
 import com.dongbaeb.demo.member.dto.MemberRequest;
 import com.dongbaeb.demo.member.dto.MemberResponse;
 import com.dongbaeb.demo.member.repository.MemberRepository;
+import com.dongbaeb.demo.member.repository.MemberUniversityRepository;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,6 +36,9 @@ class MemberServiceTest {
     MemberService memberService;
     @Autowired
     MemberRepository memberRepository;
+    @Autowired
+    MemberUniversityRepository memberUniversityRepository;
+
 
     @Test
     @DisplayName("사용자의 정보를 수정한다.")
@@ -47,6 +57,28 @@ class MemberServiceTest {
         // then
         assertThat(actual).isEqualTo(expected);
     }
+
+    @Test
+    @DisplayName("멤버 정보를 가지고 올 수 있다.")
+    void getMemberTest() {
+        Member savedMember = saveMember();
+        MemberUniversity memberUniversity1 = new MemberUniversity(savedMember, University.SIRIB);
+        MemberUniversity memberUniversity2 = new MemberUniversity(savedMember, University.SEJONG);
+
+        memberRepository.save(savedMember);
+        memberUniversityRepository.save(memberUniversity1);
+        memberUniversityRepository.save(memberUniversity2);
+
+        MemberResponse response = memberService.getMember(savedMember.getId(), new MemberAuth(savedMember.getId()));
+
+        assertThat(response.universities().size()).isEqualTo(2);
+        assertThat(response.id()).isEqualTo(savedMember.getId());
+        System.out.println("response.universities().toString() = " + response.universities().toString());
+        assertThat(response.universities().contains("서울시립대학교")).isTrue();
+        assertThat(response.universities().contains("가천대학교")).isFalse();
+
+    }
+
 
     @Test
     @DisplayName("다른 사용자의 정보를 수정하려고 시도하면 예외가 발생한다.")
