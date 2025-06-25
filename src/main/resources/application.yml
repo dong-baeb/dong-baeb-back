@@ -29,6 +29,10 @@ server:
   port: 8080
 jwt:
   secret-key: ${JWT_TOKEN_SECRET_KEY}
+logging:
+  level:
+    root: info
+    com.dongbaeb.demo.global.logging: debug
 ---
 # local
 spring:
@@ -54,3 +58,7 @@ server:
   port: 8081
 jwt:
   secret-key: JSON_WEB_TOKEN_SECRET_KEY_FOR_LOCAL_PROFILE
+logging:
+  level:
+    root: info
+    com.dongbaeb.demo.global.logging: debug
