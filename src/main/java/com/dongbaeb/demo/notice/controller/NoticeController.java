@@ -107,7 +107,23 @@ public class NoticeController {
             summary = "멤버 ID로 공지 가져오기",
             description = "멤버 ID로 해당 멤버가 작성한 공지를 가지고 온다."
     )
-    //API 응답 작성
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "공지 조회 성공",
+                    content = @Content(schema = @Schema(implementation = NoticeResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "유효하지 않은 액세스 토큰으로 인한 멤버 정보 조회 실패",
+                    content = @Content(schema = @Schema(implementation = ExceptionResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "다른 사용자의 공지를 접근했습니다.",
+                    content = @Content(schema = @Schema(implementation = ExceptionResponse.class))
+            )
+    })
     @GetMapping("/member/{id}")
     public ResponseEntity<List<NoticeResponse>> getNoticeByMemberId(@PathVariable Long id, MemberAuth memberAuth) {
         List<NoticeResponse> foundNotices = noticeService.getNoticeByMemberId(id, memberAuth);

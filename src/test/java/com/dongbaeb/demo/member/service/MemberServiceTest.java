@@ -65,7 +65,6 @@ class MemberServiceTest {
         MemberUniversity memberUniversity1 = new MemberUniversity(savedMember, University.SIRIB);
         MemberUniversity memberUniversity2 = new MemberUniversity(savedMember, University.SEJONG);
 
-        memberRepository.save(savedMember);
         memberUniversityRepository.save(memberUniversity1);
         memberUniversityRepository.save(memberUniversity2);
 
@@ -76,7 +75,17 @@ class MemberServiceTest {
         System.out.println("response.universities().toString() = " + response.universities().toString());
         assertThat(response.universities().contains("서울시립대학교")).isTrue();
         assertThat(response.universities().contains("가천대학교")).isFalse();
+    }
 
+    @Test
+    @DisplayName("다른 사용자의 정보를 조회하려고 하면 예외가 발생한다.")
+    void getMemberExceptionTest() {
+        Member member = saveMember();
+        Member anotherMember = saveMember();
+
+        assertThatCode(() -> memberService.getMember(member.getId(), new MemberAuth(anotherMember.getId())))
+                .isInstanceOf(ForbiddenException.class)
+                .hasMessage("다른 사용자의 정보를 수정, 삭제할 수 없습니다.");
     }
 
 

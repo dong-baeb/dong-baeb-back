@@ -3,6 +3,7 @@ package com.dongbaeb.demo.notice.service;
 import com.dongbaeb.demo.global.dto.MemberAuth;
 import com.dongbaeb.demo.global.exception.BadRequestException;
 import com.dongbaeb.demo.global.exception.ForbiddenException;
+import com.dongbaeb.demo.global.exception.UnauthorizedException;
 import com.dongbaeb.demo.member.domain.Member;
 import com.dongbaeb.demo.member.domain.MemberUniversity;
 import com.dongbaeb.demo.member.domain.Role;
@@ -221,6 +222,45 @@ class NoticeServiceTest {
         // then
         assertThat(response).isNotNull();
         assertThat(response.id()).isEqualTo(notice.getId());
+    }
+
+    @Test
+    @DisplayName("멤버 아이디를 이용하여 해당 멤버가 작성한 공지를 조회할 수 있다.")
+    void readNoticeByMemberId() {
+        Member member = saveMember("멤버");
+        Notice notice = saveTestNotice(member);
+        Notice notice2 = saveTestNotice(member);
+        Notice notice3 = new Notice("동서울", member, "수련회", "수련회가자", LocalDate.now(), LocalDate.now());
+        noticeRepository.save(notice3);
+        List<NoticePhoto> noticePhotos3 = savePhotos(notice3);
+
+        List<NoticeResponse> foundNotices = noticeService.getNoticeByMemberId(member.getId(),
+                new MemberAuth(member.getId()));
+
+        assertThat(foundNotices.size()).isEqualTo(3);
+        for (NoticeResponse foundNotice : foundNotices) {
+            assertThat(foundNotice.author()).isEqualTo(member.getName());
+        }
+    }
+
+    @Test
+    @DisplayName("다른 사용자의 공지를 가져오려고 하면 예외가 발생한다.")
+    void readNoticeByMemberIdExceptionText() {
+        Member member = saveMember("멤버");
+        saveTestNotice(member);
+        saveTestNotice(member);
+        Notice notice3 = new Notice("동서울", member, "수련회", "수련회가자", LocalDate.now(), LocalDate.now());
+        noticeRepository.save(notice3);
+        List<NoticePhoto> noticePhotos3 = savePhotos(notice3);
+
+        Member anotherMember = saveMember("멤버");
+        saveTestNotice(anotherMember);
+        saveTestNotice(anotherMember);
+
+        assertThatThrownBy(
+                () -> noticeService.getNoticeByMemberId(member.getId(), new MemberAuth(anotherMember.getId())))
+                .isInstanceOf(ForbiddenException.class)
+                .hasMessage("다른 사용자가 작성한 공지는 조회할 수 없습니다.");
     }
 
     @ParameterizedTest
