@@ -1,6 +1,7 @@
 package com.dongbaeb.demo.notice.repository;
 
 import com.dongbaeb.demo.member.domain.Member;
+
 import com.dongbaeb.demo.notice.domain.Notice;
 import com.dongbaeb.demo.notice.domain.NoticeCategory;
 import java.util.List;
@@ -14,6 +15,7 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
     Page<Notice> findByNoticeCategoryOrderByIdAsc(NoticeCategory noticeCategory, Pageable pageable);
 
     List<Notice> findByAuthor(Member author);
+
 }
 
 

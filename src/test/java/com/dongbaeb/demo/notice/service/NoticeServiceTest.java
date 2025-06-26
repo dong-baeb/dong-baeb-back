@@ -3,7 +3,6 @@ package com.dongbaeb.demo.notice.service;
 import com.dongbaeb.demo.global.dto.MemberAuth;
 import com.dongbaeb.demo.global.exception.BadRequestException;
 import com.dongbaeb.demo.global.exception.ForbiddenException;
-import com.dongbaeb.demo.global.exception.UnauthorizedException;
 import com.dongbaeb.demo.member.domain.Member;
 import com.dongbaeb.demo.member.domain.MemberUniversity;
 import com.dongbaeb.demo.member.domain.Role;
