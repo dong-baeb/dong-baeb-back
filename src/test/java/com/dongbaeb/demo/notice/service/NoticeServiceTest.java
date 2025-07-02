@@ -233,33 +233,12 @@ class NoticeServiceTest {
         noticeRepository.save(notice3);
         List<NoticePhoto> noticePhotos3 = savePhotos(notice3);
 
-        List<NoticeResponse> foundNotices = noticeService.getNoticeByMemberId(member.getId(),
-                new MemberAuth(member.getId()));
+        List<NoticeResponse> foundNotices = noticeService.getNoticeByMemberId(new MemberAuth(member.getId()));
 
         assertThat(foundNotices.size()).isEqualTo(3);
         for (NoticeResponse foundNotice : foundNotices) {
             assertThat(foundNotice.author()).isEqualTo(member.getName());
         }
-    }
-
-    @Test
-    @DisplayName("다른 사용자의 공지를 가져오려고 하면 예외가 발생한다.")
-    void readNoticeByMemberIdExceptionText() {
-        Member member = saveMember("멤버");
-        saveTestNotice(member);
-        saveTestNotice(member);
-        Notice notice3 = new Notice("동서울", member, "수련회", "수련회가자", LocalDate.now(), LocalDate.now());
-        noticeRepository.save(notice3);
-        List<NoticePhoto> noticePhotos3 = savePhotos(notice3);
-
-        Member anotherMember = saveMember("멤버");
-        saveTestNotice(anotherMember);
-        saveTestNotice(anotherMember);
-
-        assertThatThrownBy(
-                () -> noticeService.getNoticeByMemberId(member.getId(), new MemberAuth(anotherMember.getId())))
-                .isInstanceOf(ForbiddenException.class)
-                .hasMessage("다른 사용자가 작성한 공지는 조회할 수 없습니다.");
     }
 
     @ParameterizedTest
