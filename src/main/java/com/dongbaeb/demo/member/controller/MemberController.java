@@ -2,7 +2,6 @@ package com.dongbaeb.demo.member.controller;
 
 import com.dongbaeb.demo.global.dto.MemberAuth;
 import com.dongbaeb.demo.global.exception.dto.ExceptionResponse;
-import com.dongbaeb.demo.member.domain.Member;
 import com.dongbaeb.demo.member.dto.MemberRequest;
 import com.dongbaeb.demo.member.dto.MemberResponse;
 import com.dongbaeb.demo.member.service.MemberService;
@@ -15,7 +14,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "Member 프로필 수정 관련 API 요청", description = "Member의 프로필을 생성,수정,삭제 등의 역할을 한다.")
 @RequiredArgsConstructor
