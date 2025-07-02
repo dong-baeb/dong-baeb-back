@@ -60,12 +60,10 @@ public class NoticeService {
         return NoticeResponse.from(notice, photos, noticeUniversities);
     }
 
-    public List<NoticeResponse> getNoticeByMemberId(Long id, MemberAuth memberAuth) {
-        validateAuthority(id, memberAuth);
-
+    public List<NoticeResponse> getNoticeByMemberId(MemberAuth memberAuth) {
         List<NoticeResponse> noticeResponses = new ArrayList<>();
 
-        Member author = findMemberById(id);
+        Member author = findMemberById(memberAuth.memberId());
         List<Notice> notices = noticeRepository.findByAuthor(author);
         for (Notice notice : notices) {
             List<NoticePhoto> noticePhotos = noticePhotoRepository.findByNotice(notice);
@@ -74,12 +72,6 @@ public class NoticeService {
         }
 
         return noticeResponses;
-    }
-
-    private void validateAuthority(Long id, MemberAuth memberAuth) {
-        if (!Objects.equals(memberAuth.memberId(), id)) {
-            throw new ForbiddenException("다른 사용자가 작성한 공지는 조회할 수 없습니다.");
-        }
     }
 
     @Transactional

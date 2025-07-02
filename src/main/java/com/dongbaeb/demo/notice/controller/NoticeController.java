@@ -124,9 +124,9 @@ public class NoticeController {
                     content = @Content(schema = @Schema(implementation = ExceptionResponse.class))
             )
     })
-    @GetMapping("/member/{id}")
-    public ResponseEntity<List<NoticeResponse>> getNoticeByMemberId(@PathVariable Long id, MemberAuth memberAuth) {
-        List<NoticeResponse> foundNotices = noticeService.getNoticeByMemberId(id, memberAuth);
+    @GetMapping("/member")
+    public ResponseEntity<List<NoticeResponse>> getNoticeByMemberId(MemberAuth memberAuth) {
+        List<NoticeResponse> foundNotices = noticeService.getNoticeByMemberId(memberAuth);
         return ResponseEntity.ok(foundNotices);
     }
 
