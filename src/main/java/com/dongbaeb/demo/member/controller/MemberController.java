@@ -50,8 +50,8 @@ public class MemberController {
             )
     })
     @GetMapping("/{id}")
-    public ResponseEntity<MemberResponse> getMember(@PathVariable("id") Long id, MemberAuth memberAuth) {
-        MemberResponse foundMember = memberService.getMember(id, memberAuth);
+    public ResponseEntity<MemberResponse> getMember(MemberAuth memberAuth) {
+        MemberResponse foundMember = memberService.getMember(memberAuth);
         return ResponseEntity.ok(foundMember);
     }
 

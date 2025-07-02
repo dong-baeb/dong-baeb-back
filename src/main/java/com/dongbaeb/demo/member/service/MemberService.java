@@ -25,9 +25,8 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final MemberUniversityRepository memberUniversityRepository;
 
-    public MemberResponse getMember(Long id, MemberAuth memberAuth) {
-        validateAuthority(id, memberAuth);
-        Member member = findMember(id);
+    public MemberResponse getMember(MemberAuth memberAuth) {
+        Member member = findMember(memberAuth.memberId());
         List<University> universities = memberUniversityRepository.findUniversitiesByMember(member);
 
         return MemberResponse.fromMember(member, universities);
