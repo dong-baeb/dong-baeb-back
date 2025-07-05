@@ -1,6 +1,7 @@
 package com.dongbaeb.demo.global;
 
 import com.dongbaeb.demo.global.dto.MemberAuth;
+import com.dongbaeb.demo.global.exception.UnauthorizedException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
@@ -22,7 +23,8 @@ public class MemberAuthArgumentResolver implements HandlerMethodArgumentResolver
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         HttpServletRequest httpServletRequest = (HttpServletRequest) webRequest.getNativeRequest();
         if (httpServletRequest.getAttribute("member_id") == null) {
-            return new MemberAuth(Long.valueOf("1"));
+//            return new MemberAuth(Long.valueOf("1"));
+            throw new UnauthorizedException("인증되지 않은 사용자입니다.");
         }
         String memberId = httpServletRequest.getAttribute("member_id").toString();
 
