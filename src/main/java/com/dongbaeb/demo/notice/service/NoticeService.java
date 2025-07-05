@@ -20,6 +20,7 @@ import com.dongbaeb.demo.notice.repository.NoticeRepository;
 import com.dongbaeb.demo.notice.repository.NoticeUniversityRepository;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -57,6 +58,20 @@ public class NoticeService {
         validateReadAuthorization(member, notice, noticeUniversities);
 
         return NoticeResponse.from(notice, photos, noticeUniversities);
+    }
+
+    public List<NoticeResponse> getNoticeByMemberId(MemberAuth memberAuth) {
+        List<NoticeResponse> noticeResponses = new ArrayList<>();
+
+        Member author = findMemberById(memberAuth.memberId());
+        List<Notice> notices = noticeRepository.findByAuthor(author);
+        for (Notice notice : notices) {
+            List<NoticePhoto> noticePhotos = noticePhotoRepository.findByNotice(notice);
+            List<NoticeUniversity> noticeUniversities = noticeUniversityRepository.findByNotice(notice);
+            noticeResponses.add(NoticeResponse.from(notice, noticePhotos, noticeUniversities));
+        }
+
+        return noticeResponses;
     }
 
     @Transactional

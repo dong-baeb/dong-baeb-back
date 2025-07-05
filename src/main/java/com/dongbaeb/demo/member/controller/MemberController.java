@@ -3,6 +3,7 @@ package com.dongbaeb.demo.member.controller;
 import com.dongbaeb.demo.global.dto.MemberAuth;
 import com.dongbaeb.demo.global.exception.dto.ExceptionResponse;
 import com.dongbaeb.demo.member.dto.MemberRequest;
+import com.dongbaeb.demo.member.dto.MemberResponse;
 import com.dongbaeb.demo.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -14,6 +15,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,6 +28,32 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class MemberController {
     private final MemberService memberService;
+
+    @Operation(
+            summary = "멤버 정보 조회",
+            description = "멤버의 정보를 조회한다."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "멤버 정보 조회 성공"
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "유효하지 않은 액세스 토큰으로 인한 멤버 정보 조회 실패",
+                    content = @Content(schema = @Schema(implementation = ExceptionResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "다른 사용자의 정보 조회로 인한 조회 실패",
+                    content = @Content(schema = @Schema(implementation = ExceptionResponse.class))
+            )
+    })
+    @GetMapping("/{id}")
+    public ResponseEntity<MemberResponse> getMember(MemberAuth memberAuth) {
+        MemberResponse foundMember = memberService.getMember(memberAuth);
+        return ResponseEntity.ok(foundMember);
+    }
 
     @Operation(
             summary = "멤버 정보 수정",
