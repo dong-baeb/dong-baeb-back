@@ -10,6 +10,7 @@ import com.dongbaeb.demo.member.domain.University;
 import com.dongbaeb.demo.member.repository.MemberRepository;
 import com.dongbaeb.demo.member.repository.MemberUniversityRepository;
 import com.dongbaeb.demo.notice.domain.Notice;
+import com.dongbaeb.demo.notice.domain.NoticeCategory;
 import com.dongbaeb.demo.notice.domain.NoticePhoto;
 import com.dongbaeb.demo.notice.domain.NoticeUniversity;
 import com.dongbaeb.demo.notice.dto.NoticeRequest;
@@ -17,6 +18,7 @@ import com.dongbaeb.demo.notice.dto.NoticeResponse;
 import com.dongbaeb.demo.notice.repository.NoticePhotoRepository;
 import com.dongbaeb.demo.notice.repository.NoticeRepository;
 import com.dongbaeb.demo.notice.repository.NoticeUniversityRepository;
+import java.util.Random;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -203,6 +205,58 @@ class NoticeServiceTest {
         assertThatThrownBy(() -> noticeService.readNotice(notice.getId(), new MemberAuth(member.getId())))
                 .isInstanceOf(ForbiddenException.class)
                 .hasMessage("공지 조회 권한이 없습니다.");
+    }
+
+    @Test
+    @DisplayName("다가오는 공지를 조회할 수 있다.")
+    void readUpcomingNoticesTest() {
+        Member author = saveMember("간사");
+        saveMemberUniversity(author, University.SIRIB);
+        saveMemberUniversity(author, University.DONGDUK);
+
+        University[] universities = University.values();
+
+        for (int i = 0; i < 30; i++) {
+            noticeRepository.save(
+                    new Notice(NoticeCategory.EAST_SEOUL, author, "동서울 공지입니다" + String.valueOf(i), "안녕하세요",
+                            LocalDate.now().plusDays(i + 1), LocalDate.now().plusDays(i + 12)));
+        }
+        for (int i = 0; i < 30; i++) {
+            Random random = new Random();
+            University university = universities[random.nextInt(universities.length)];
+            Notice notice = noticeRepository.save(
+                    new Notice(NoticeCategory.UNIVERSITY, author, university.getName() + " 공지입니다", "안녕하세요",
+                            LocalDate.now().plusDays(i + 1), LocalDate.now().plusDays(i + 12)));
+            noticeUniversityRepository.save(new NoticeUniversity(notice, university));
+        }
+        for (int i = 0; i < 30; i++) {
+            Random random = new Random();
+            University university = universities[random.nextInt(universities.length)];
+            University university2 = universities[random.nextInt(universities.length)];
+            Notice notice = noticeRepository.save(
+                    new Notice(NoticeCategory.UNIVERSITY, author, university.getName() + " 공지입니다", "안녕하세요",
+                            LocalDate.now().plusDays(i + 1), LocalDate.now().plusDays(i + 12)));
+            noticeUniversityRepository.save(new NoticeUniversity(notice, university));
+            noticeUniversityRepository.save(new NoticeUniversity(notice, university2));
+        }
+
+        List<NoticeResponse> noticeResponses = noticeService.readUpcomingNotice(new MemberAuth(author.getId()));
+
+        for (NoticeResponse noticeResponse : noticeResponses) {
+            List<String> memberUniversities = noticeResponse.universities();
+
+            if (noticeResponse.category().equals(NoticeCategory.UNIVERSITY.name())) {
+                assertThat(memberUniversities.contains(University.SIRIB.name()) || memberUniversities.contains(
+                        University.DONGDUK.name())).isTrue();
+            } else {
+                assertThat(memberUniversities.size()).isEqualTo(0);
+            }
+            assertThat(noticeResponse.startDate()).isAfter(LocalDate.now());
+            assertThat(noticeResponse.startDate()).isBefore(LocalDate.now().plusDays(15));
+
+        }
+
+
     }
 
     @Test
