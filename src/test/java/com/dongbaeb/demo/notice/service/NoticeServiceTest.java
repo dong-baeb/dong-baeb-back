@@ -245,9 +245,9 @@ class NoticeServiceTest {
         for (NoticeResponse noticeResponse : noticeResponses) {
             List<String> memberUniversities = noticeResponse.universities();
 
-            if (noticeResponse.category().equals(NoticeCategory.UNIVERSITY.name())) {
-                assertThat(memberUniversities.contains(University.SIRIB.name()) || memberUniversities.contains(
-                        University.DONGDUK.name())).isTrue();
+            if (noticeResponse.category().equals(NoticeCategory.UNIVERSITY.getCategory())) {
+                assertThat(memberUniversities.contains(University.SIRIB.getShortName()) || memberUniversities.contains(
+                        University.DONGDUK.getShortName())).isTrue();
             } else {
                 assertThat(memberUniversities.size()).isEqualTo(0);
             }
