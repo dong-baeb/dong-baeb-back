@@ -77,7 +77,7 @@ public record NoticeResponse(
 
     private static List<String> extractUniversities(List<NoticeUniversity> universities) {
         return universities.stream()
-                .map(noticeUniversity -> noticeUniversity.getUniversity().name())
+                .map(noticeUniversity -> noticeUniversity.getUniversity().getShortName())
                 .collect(Collectors.toList());
     }
 }
