@@ -1,5 +1,6 @@
 package com.dongbaeb.demo.notice.dto;
 
+import com.dongbaeb.demo.member.domain.University;
 import com.dongbaeb.demo.notice.domain.Notice;
 import com.dongbaeb.demo.notice.domain.NoticePhoto;
 import com.dongbaeb.demo.notice.domain.NoticeUniversity;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Builder;
+import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties.UiService;
 
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -57,12 +59,13 @@ public record NoticeResponse(
         );
     }
 
-    public static NoticeResponse fromUpcomingNotice(Notice notice) {
+    public static NoticeResponse fromUpcomingNotice(Notice notice, List<University> universities) {
         return NoticeResponse.builder()
                 .id(notice.getId())
                 .title(notice.getTitle())
                 .startDate(notice.getStartDate())
                 .category(notice.getNoticeCategory().name())
+                .universities(extractFromEnumUniversities(universities))
                 .build();
     }
 
@@ -75,6 +78,12 @@ public record NoticeResponse(
     private static List<String> extractUniversities(List<NoticeUniversity> universities) {
         return universities.stream()
                 .map(noticeUniversity -> noticeUniversity.getUniversity().name())
+                .collect(Collectors.toList());
+    }
+
+    private static List<String> extractFromEnumUniversities(List<University> universities) {
+        return universities.stream()
+                .map(university -> university.name())
                 .collect(Collectors.toList());
     }
 }

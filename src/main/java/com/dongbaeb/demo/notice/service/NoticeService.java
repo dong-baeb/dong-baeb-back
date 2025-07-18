@@ -65,23 +65,24 @@ public class NoticeService {
     @Transactional(readOnly = true)
     public List<NoticeResponse> readUpcomingNotice(MemberAuth memberAuth) {
         List<Notice> upcomingNotices = new ArrayList<>();
-        upcomingNotices.addAll(
-                noticeRepository.findByEastUniversityAndDateRange(LocalDate.now(), LocalDate.now().plusWeeks(2)));
-        upcomingNotices.addAll(getUpcomingNoticeByUniversity(memberAuth));
-
-        upcomingNotices.sort(Comparator.comparing(Notice::getStartDate));
-
-        return upcomingNotices.stream()
-                .map(notice -> NoticeResponse.fromUpcomingNotice(notice))
-                .toList();
-    }
-
-    private List<Notice> getUpcomingNoticeByUniversity(MemberAuth memberAuth) {
         Member member = findMemberById(memberAuth.memberId());
         List<University> universityList = memberUniversityRepository.findByMember(member)
                 .stream()
                 .map(memberUniversity -> memberUniversity.getUniversity())
                 .toList();
+
+        upcomingNotices.addAll(
+                noticeRepository.findByEastUniversityAndDateRange(LocalDate.now(), LocalDate.now().plusWeeks(2)));
+        upcomingNotices.addAll(getUpcomingNoticeByUniversity(universityList));
+
+        upcomingNotices.sort(Comparator.comparing(Notice::getStartDate));
+
+        return upcomingNotices.stream()
+                .map(notice -> NoticeResponse.fromUpcomingNotice(notice,universityList))
+                .toList();
+    }
+
+    private List<Notice> getUpcomingNoticeByUniversity(List<University> universityList) {
         List<Notice> upcomingUniversityNotices = noticeUniversityRepository.findByUniversitiesAndDateRange(
                         universityList,
                         LocalDate.now(), LocalDate.now().plusWeeks(2))
