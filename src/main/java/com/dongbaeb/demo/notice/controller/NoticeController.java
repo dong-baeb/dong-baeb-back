@@ -104,6 +104,23 @@ public class NoticeController {
     }
 
     @Operation(
+            summary = "다가오는 공지 조회",
+            description = "다가오는 공지를 조회한다."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "다가오는 공지 조회 성공",
+                    content = @Content(schema = @Schema(implementation = NoticeResponse.class))
+            ),
+    })
+    @GetMapping("/upcoming")
+    public ResponseEntity<List<NoticeResponse>> readUpcomingNotice(MemberAuth memberAuth) {
+        List<NoticeResponse> response = noticeService.readUpcomingNotice(memberAuth);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(
             summary = "멤버 ID로 공지 가져오기",
             description = "멤버 ID로 해당 멤버가 작성한 공지를 가지고 온다."
     )

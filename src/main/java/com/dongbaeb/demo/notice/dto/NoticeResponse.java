@@ -4,12 +4,17 @@ import com.dongbaeb.demo.notice.domain.Notice;
 import com.dongbaeb.demo.notice.domain.NoticePhoto;
 import com.dongbaeb.demo.notice.domain.NoticeUniversity;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.Builder;
 
+@Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public record NoticeResponse(
         @Schema(description = "공지 ID", example = "1")
         Long id,
@@ -50,6 +55,15 @@ public record NoticeResponse(
                 notice.getCreatedAt(),
                 notice.getUpdatedAt()
         );
+    }
+
+    public static NoticeResponse fromUpcomingNotice(Notice notice) {
+        return NoticeResponse.builder()
+                .id(notice.getId())
+                .title(notice.getTitle())
+                .startDate(notice.getStartDate())
+                .category(notice.getNoticeCategory().name())
+                .build();
     }
 
     private static List<String> extractImageUrls(List<NoticePhoto> photos) {

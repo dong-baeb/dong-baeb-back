@@ -10,12 +10,9 @@ import org.springframework.data.repository.query.Param;
 
 public interface MemberUniversityRepository extends JpaRepository<MemberUniversity, Long> {
     List<MemberUniversity> findByMember(Member member);
-<<<<<<< HEAD
-=======
 
     @Query("select mu.university from MemberUniversity mu where mu.member = :member")
     List<University> findUniversitiesByMember(@Param("member") Member member);
->>>>>>> 09278221e768ea2c410c59f06234d8d191f97fee
 
     boolean existsByMemberAndUniversity(Member member, University university);
 
