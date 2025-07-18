@@ -26,15 +26,16 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
     List<Notice> findByNoticeCategory(NoticeCategory noticeCategory);
 
     @Query("""
-                SELECT nu FROM NoticeUniversity nu
-                JOIN FETCH nu.notice n
-                WHERE n.category = '동서울'
+                SELECT DISTINCT n FROM NoticeUniversity nu
+                JOIN nu.notice n
+                WHERE n.noticeCategory = '동서울'
                   AND n.startDate BETWEEN :start AND :end
             """)
     List<Notice> findByEastUniversityAndDateRange(
             @Param("start") LocalDate start,
             @Param("end") LocalDate end
     );
+
 }
 
 
