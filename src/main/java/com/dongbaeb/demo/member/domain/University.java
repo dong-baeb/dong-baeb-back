@@ -43,5 +43,9 @@ public enum University {
     public String getName() {
         return name;
     }
+
+    public String getShortName() {
+        return this.shortName;
+    }
 }
 
