@@ -64,7 +64,7 @@ public record NoticeResponse(
                 .id(notice.getId())
                 .title(notice.getTitle())
                 .startDate(notice.getStartDate())
-                .category(notice.getNoticeCategory().name())
+                .category(notice.getNoticeCategory().getCategory())
                 .universities(extractUniversities(universities))
                 .build();
     }
