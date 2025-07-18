@@ -59,13 +59,13 @@ public record NoticeResponse(
         );
     }
 
-    public static NoticeResponse fromUpcomingNotice(Notice notice, List<University> universities) {
+    public static NoticeResponse fromUpcomingNotice(Notice notice, List<NoticeUniversity> universities) {
         return NoticeResponse.builder()
                 .id(notice.getId())
                 .title(notice.getTitle())
                 .startDate(notice.getStartDate())
                 .category(notice.getNoticeCategory().name())
-                .universities(extractFromEnumUniversities(universities))
+                .universities(extractUniversities(universities))
                 .build();
     }
 
@@ -78,12 +78,6 @@ public record NoticeResponse(
     private static List<String> extractUniversities(List<NoticeUniversity> universities) {
         return universities.stream()
                 .map(noticeUniversity -> noticeUniversity.getUniversity().name())
-                .collect(Collectors.toList());
-    }
-
-    private static List<String> extractFromEnumUniversities(List<University> universities) {
-        return universities.stream()
-                .map(university -> university.name())
                 .collect(Collectors.toList());
     }
 }

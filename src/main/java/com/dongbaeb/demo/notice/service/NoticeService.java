@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -64,6 +66,7 @@ public class NoticeService {
 
     @Transactional(readOnly = true)
     public List<NoticeResponse> readUpcomingNotice(MemberAuth memberAuth) {
+        List<NoticeResponse> noticeResponses = new ArrayList<>();
         List<Notice> upcomingNotices = new ArrayList<>();
         Member member = findMemberById(memberAuth.memberId());
         List<University> universityList = memberUniversityRepository.findByMember(member)
@@ -72,24 +75,33 @@ public class NoticeService {
                 .toList();
 
         upcomingNotices.addAll(
-                noticeRepository.findByEastUniversityAndDateRange(LocalDate.now(), LocalDate.now().plusWeeks(2)));
+                noticeRepository.findByNoticeCategoryAndStartDateBetween(NoticeCategory.EAST_SEOUL, LocalDate.now(),
+                        LocalDate.now().plusWeeks(2)));
         upcomingNotices.addAll(getUpcomingNoticeByUniversity(universityList));
 
         upcomingNotices.sort(Comparator.comparing(Notice::getStartDate));
 
-        return upcomingNotices.stream()
-                .map(notice -> NoticeResponse.fromUpcomingNotice(notice,universityList))
-                .toList();
+        for (Notice upcomingNotice : upcomingNotices) {
+            if (upcomingNotice.getNoticeCategory().equals(NoticeCategory.EAST_SEOUL)) {
+                noticeResponses.add(NoticeResponse.fromUpcomingNotice(upcomingNotice, new ArrayList<>()));
+            } else {
+                noticeResponses.add(NoticeResponse.fromUpcomingNotice(upcomingNotice,
+                        noticeUniversityRepository.findByNotice(upcomingNotice)));
+            }
+        }
+
+        return noticeResponses;
     }
 
     private List<Notice> getUpcomingNoticeByUniversity(List<University> universityList) {
-        List<Notice> upcomingUniversityNotices = noticeUniversityRepository.findByUniversitiesAndDateRange(
+        Set<Notice> noticeSet = noticeUniversityRepository.findByUniversitiesAndDateRange(
                         universityList,
                         LocalDate.now(), LocalDate.now().plusWeeks(2))
                 .stream()
                 .map(noticeUniversity -> noticeUniversity.getNotice())
-                .toList();
-        return upcomingUniversityNotices;
+                .collect(Collectors.toSet());
+        List<Notice> notices = new ArrayList<>(noticeSet);
+        return notices;
     }
 
     public List<NoticeResponse> getNoticeByMemberId(MemberAuth memberAuth) {
