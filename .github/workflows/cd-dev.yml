@@ -1,7 +1,7 @@
 name: CD DEV
 
 on:
-  pull_request:
+  push:
     branches: [ develop ]
 
 jobs:
@@ -59,10 +59,10 @@ jobs:
           [ -d dong-baeb-back ] || git clone --filter=blob:none --no-checkout https://github.com/dong-baeb/dong-baeb-back.git
           cd dong-baeb-back
           git sparse-checkout init --cone
-          git fetch origin feature/#44
-          git checkout feature/#44
+          git fetch origin develop
+          git checkout develop
           git sparse-checkout set docker
-          git pull origin feature/#44
+          git pull origin develop
 
       - name: Docker run
         working-directory: /home/ubuntu
