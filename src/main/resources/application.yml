@@ -2,9 +2,6 @@
 oauth:
   kakao:
     user-info-request-url: https://kapi.kakao.com/v2/user/me
-spring:
-  config:
-    import: file:.env[.properties]
 application:
   name: DongBaeb
 jwt:
@@ -29,10 +26,15 @@ server:
   port: 8080
 jwt:
   secret-key: ${JWT_TOKEN_SECRET_KEY}
+logging:
+  level:
+    root: info
+    com.dongbaeb.demo.global.logging: debug
 ---
 # local
 spring:
   config:
+    import: file:.env[.properties]
     activate:
       on-profile: local
   h2:
@@ -54,3 +56,10 @@ server:
   port: 8081
 jwt:
   secret-key: JSON_WEB_TOKEN_SECRET_KEY_FOR_LOCAL_PROFILE
+logging:
+  level:
+    root: info
+    com.dongbaeb.demo.global.logging: debug
+kakao:
+  id: ${TEST_KAKAO_ID}
+

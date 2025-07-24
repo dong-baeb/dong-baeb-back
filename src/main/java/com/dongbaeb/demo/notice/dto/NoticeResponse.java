@@ -1,15 +1,22 @@
 package com.dongbaeb.demo.notice.dto;
 
+import com.dongbaeb.demo.member.domain.University;
 import com.dongbaeb.demo.notice.domain.Notice;
 import com.dongbaeb.demo.notice.domain.NoticePhoto;
 import com.dongbaeb.demo.notice.domain.NoticeUniversity;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.Builder;
+import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties.UiService;
 
+@Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public record NoticeResponse(
         @Schema(description = "공지 ID", example = "1")
         Long id,
@@ -52,6 +59,16 @@ public record NoticeResponse(
         );
     }
 
+    public static NoticeResponse fromUpcomingNotice(Notice notice, List<NoticeUniversity> universities) {
+        return NoticeResponse.builder()
+                .id(notice.getId())
+                .title(notice.getTitle())
+                .startDate(notice.getStartDate())
+                .category(notice.getNoticeCategory().getCategory())
+                .universities(extractUniversities(universities))
+                .build();
+    }
+
     private static List<String> extractImageUrls(List<NoticePhoto> photos) {
         return photos.stream()
                 .map(NoticePhoto::getImageUrl)
@@ -60,7 +77,7 @@ public record NoticeResponse(
 
     private static List<String> extractUniversities(List<NoticeUniversity> universities) {
         return universities.stream()
-                .map(noticeUniversity -> noticeUniversity.getUniversity().name())
+                .map(noticeUniversity -> noticeUniversity.getUniversity().getShortName())
                 .collect(Collectors.toList());
     }
 }
