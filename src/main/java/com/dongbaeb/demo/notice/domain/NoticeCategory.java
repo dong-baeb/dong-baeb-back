@@ -40,4 +40,8 @@ public enum NoticeCategory {
         }
         return universityCountPredicate.test(universityCount);
     }
+
+    public String getCategory() {
+        return this.category;
+    }
 }

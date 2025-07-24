@@ -18,9 +18,13 @@ import com.dongbaeb.demo.notice.dto.NoticeResponse;
 import com.dongbaeb.demo.notice.repository.NoticePhotoRepository;
 import com.dongbaeb.demo.notice.repository.NoticeRepository;
 import com.dongbaeb.demo.notice.repository.NoticeUniversityRepository;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -58,6 +62,46 @@ public class NoticeService {
         validateReadAuthorization(member, notice, noticeUniversities);
 
         return NoticeResponse.from(notice, photos, noticeUniversities);
+    }
+
+    @Transactional(readOnly = true)
+    public List<NoticeResponse> readUpcomingNotice(MemberAuth memberAuth) {
+        List<NoticeResponse> noticeResponses = new ArrayList<>();
+        List<Notice> upcomingNotices = new ArrayList<>();
+        Member member = findMemberById(memberAuth.memberId());
+        List<University> universityList = memberUniversityRepository.findByMember(member)
+                .stream()
+                .map(memberUniversity -> memberUniversity.getUniversity())
+                .toList();
+
+        upcomingNotices.addAll(
+                noticeRepository.findByNoticeCategoryAndStartDateBetween(NoticeCategory.EAST_SEOUL, LocalDate.now(),
+                        LocalDate.now().plusWeeks(2)));
+        upcomingNotices.addAll(getUpcomingNoticeByUniversity(universityList));
+
+        upcomingNotices.sort(Comparator.comparing(Notice::getStartDate));
+
+        for (Notice upcomingNotice : upcomingNotices) {
+            if (upcomingNotice.getNoticeCategory().equals(NoticeCategory.EAST_SEOUL)) {
+                noticeResponses.add(NoticeResponse.fromUpcomingNotice(upcomingNotice, new ArrayList<>()));
+            } else {
+                noticeResponses.add(NoticeResponse.fromUpcomingNotice(upcomingNotice,
+                        noticeUniversityRepository.findByNotice(upcomingNotice)));
+            }
+        }
+
+        return noticeResponses;
+    }
+
+    private List<Notice> getUpcomingNoticeByUniversity(List<University> universityList) {
+        Set<Notice> noticeSet = noticeUniversityRepository.findByUniversitiesAndDateRange(
+                        universityList,
+                        LocalDate.now(), LocalDate.now().plusWeeks(2))
+                .stream()
+                .map(noticeUniversity -> noticeUniversity.getNotice())
+                .collect(Collectors.toSet());
+        List<Notice> notices = new ArrayList<>(noticeSet);
+        return notices;
     }
 
     public List<NoticeResponse> getNoticeByMemberId(MemberAuth memberAuth) {
@@ -226,4 +270,5 @@ public class NoticeService {
         return noticeUniversities.stream()
                 .anyMatch(university -> memberUniversities.contains(university.getUniversity()));
     }
+
 }
