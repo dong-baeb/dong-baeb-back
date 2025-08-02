@@ -40,9 +40,9 @@ public class DataInitialize implements CommandLineRunner {
         Member member = saveTestMember();
         saveTestEastNotice(member, "동서울 체육대회", "동서울 체육대회 열려요 ㅎ", LocalDate.of(2025, 7, 24), LocalDate.of(2025, 7, 24));
         saveTestUniversityNotice(member, List.of(University.SIRIB, University.SEJONG), "시립 세종 연합 MT",
-                "시립 세종 연합 엠티 가요 ㅎㅎ", LocalDate.of(2025, 7, 28), LocalDate.of(2025, 7, 29));
-        saveTestEastNotice(member, "동서울 말씀 읽기 모임", "동서울 말씀 읽기 모임 해요.", LocalDate.of(2025, 7, 27),
-                LocalDate.of(2025, 7, 27));
+                "시립 세종 연합 엠티 가요 ㅎㅎ", LocalDate.of(2025, 7, 31), LocalDate.of(2025, 8, 1));
+        saveTestEastNotice(member, "동서울 말씀 읽기 모임", "동서울 말씀 읽기 모임 해요.", LocalDate.of(2025, 8, 5),
+                LocalDate.of(2025, 8, 8));
     }
 
     private Member saveTestMember() {

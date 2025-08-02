@@ -49,7 +49,7 @@ public class MemberController {
                     content = @Content(schema = @Schema(implementation = ExceptionResponse.class))
             )
     })
-    @GetMapping("/{id}")
+    @GetMapping("/me")
     public ResponseEntity<MemberResponse> getMember(MemberAuth memberAuth) {
         MemberResponse foundMember = memberService.getMember(memberAuth);
         return ResponseEntity.ok(foundMember);
