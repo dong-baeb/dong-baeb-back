@@ -20,7 +20,6 @@ import com.dongbaeb.demo.notice.repository.NoticeRepository;
 import com.dongbaeb.demo.notice.repository.NoticeUniversityRepository;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -270,5 +269,4 @@ public class NoticeService {
         return noticeUniversities.stream()
                 .anyMatch(university -> memberUniversities.contains(university.getUniversity()));
     }
-
 }

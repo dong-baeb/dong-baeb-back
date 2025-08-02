@@ -38,7 +38,7 @@ public class NoticeController {
     private final NoticeService noticeService;
 
     @Operation(summary = "조건에 맞는 공지를 가져온다.", description = "category와 name에 맞는 공지를 가져온다. page, size를 통해 가져오는 양을 조절할 수 있다.")
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<List<NoticeResponse>> getNotices(
             @Parameter(description = "공지 카테고리 정보")
             @RequestParam("category") NoticeCategory noticeCategory,
