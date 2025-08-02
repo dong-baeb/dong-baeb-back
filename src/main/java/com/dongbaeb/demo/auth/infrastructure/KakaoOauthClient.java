@@ -53,15 +53,15 @@ public class KakaoOauthClient {
             // HTTP 오류 응답 처리 (4xx, 5xx)
             log.error("Kakao API 응답 오류: statusCode={}, responseBody={}", e.getStatusCode(), e.getResponseBodyAsString(),
                     e);
-            throw new BadRequestException("카카오 사용자 정보 요청 실패: 응답 오류", e);
+            throw new BadRequestException("카카오 사용자 정보 요청 실패: 응답 오류");
         } catch (WebClientRequestException e) {
             // 요청 자체 실패 (네트워크 오류 등)
             log.error("Kakao API 요청 실패", e);
-            throw new BadRequestException("카카오 사용자 정보 요청 실패: 네트워크 오류", e);
+            throw new BadRequestException("카카오 사용자 정보 요청 실패: 네트워크 오류");
         } catch (Exception e) {
             // 그 외 모든 예외
             log.error("Kakao 사용자 정보 요청 중 알 수 없는 오류 발생", e);
-            throw new BadRequestException("카카오 사용자 정보 요청 실패: 알 수 없는 오류", e);
+            throw new BadRequestException("카카오 사용자 정보 요청 실패: 알 수 없는 오류");
         }
     }
 }
