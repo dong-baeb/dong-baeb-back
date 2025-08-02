@@ -269,5 +269,4 @@ public class NoticeService {
         return noticeUniversities.stream()
                 .anyMatch(university -> memberUniversities.contains(university.getUniversity()));
     }
-
 }

@@ -2,6 +2,9 @@
 oauth:
   kakao:
     user-info-request-url: https://kapi.kakao.com/v2/user/me
+spring:
+  config:
+    import: file:.env[.properties]
 application:
   name: DongBaeb
 jwt:
