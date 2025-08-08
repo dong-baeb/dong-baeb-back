@@ -27,6 +27,7 @@ import org.springframework.stereotype.Component;
 public class DataInitialize implements CommandLineRunner {
 
     private final MemberRepository memberRepository;
+
     private final MemberUniversityRepository memberUniversityRepository;
     private final NoticeRepository noticeRepository;
     private final NoticeUniversityRepository noticeUniversityRepository;
