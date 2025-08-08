@@ -4,7 +4,7 @@ oauth:
     user-info-request-url: https://kapi.kakao.com/v2/user/me
 spring:
   config:
-    import: file:.env[.properties]
+    import: optional:file:.env[.properties]
 application:
   name: DongBaeb
 jwt:
