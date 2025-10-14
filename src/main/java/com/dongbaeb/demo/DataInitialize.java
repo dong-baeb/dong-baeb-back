@@ -41,13 +41,13 @@ public class DataInitialize implements CommandLineRunner {
         Member member = saveTestMember();
         saveTestEastNotice(member, "동서울 체육대회", "동서울 체육대회 열려요 ㅎ", LocalDate.of(2025, 7, 24), LocalDate.of(2025, 7, 24));
         saveTestUniversityNotice(member, List.of(University.SIRIB, University.SEJONG), "시립 세종 연합 MT",
-                "시립 세종 연합 엠티 가요 ㅎㅎ", LocalDate.of(2025, 7, 31), LocalDate.of(2025, 8, 1));
-        saveTestEastNotice(member, "동서울 말씀 읽기 모임", "동서울 말씀 읽기 모임 해요.", LocalDate.of(2025, 8, 5),
-                LocalDate.of(2025, 8, 8));
+                "시립 세종 연합 엠티 가요 ㅎㅎ", LocalDate.of(2025, 10, 1), LocalDate.of(2025, 10, 2));
+        saveTestEastNotice(member, "동서울 말씀 읽기 모임", "동서울 말씀 읽기 모임 해요.", LocalDate.of(2025, 9, 30),
+                LocalDate.of(2025, 10, 3));
     }
 
     private Member saveTestMember() {
-        Member member = new Member(kakaoId, Role.LEADER, "이세영", "전설의아베퍼", "", "2019");
+        Member member = new Member(kakaoId, Role.LEADER, "박은찬", "은찬", "", "2018");
         memberRepository.save(member);
         memberUniversityRepository.save(new MemberUniversity(member, University.SIRIB));
         return member;

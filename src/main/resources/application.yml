@@ -56,7 +56,7 @@ spring:
         show_sql: true
         dialect: org.hibernate.dialect.H2Dialect
 server:
-  port: 8081
+  port: 8080
 jwt:
   secret-key: JSON_WEB_TOKEN_SECRET_KEY_FOR_LOCAL_PROFILE
 logging:
@@ -64,5 +64,5 @@ logging:
     root: info
     com.dongbaeb.demo.global.logging: debug
 kakao:
-  id: ${TEST_KAKAO_ID}
+  id: 4309412662 #은찬
 

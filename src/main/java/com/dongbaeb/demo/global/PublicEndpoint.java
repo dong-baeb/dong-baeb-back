@@ -7,6 +7,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.util.AntPathMatcher;
 
 public enum PublicEndpoint {
+    WEB_OPTIONS(HttpMethod.OPTIONS, "/**"), // 웹용, 배포금지
     KAKAO_LOGIN(HttpMethod.POST, "/kakao-login"),
     SIGN_UP(HttpMethod.POST, "/sign-up"),
     SWAGGER_UI(HttpMethod.GET, "/swagger-ui/**"),
